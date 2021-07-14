@@ -72,12 +72,7 @@ public class FedmConnect implements FeIscListener {
 	        		        	
 	            switch(readerInfo.readerType)
 	            {
-	                case de.feig.FedmIscReaderConst.TYPE_ISCMR200:
-	                case de.feig.FedmIscReaderConst.TYPE_ISCLR2000:
-	                case de.feig.FedmIscReaderConst.TYPE_ISCMRU200:
-	                case de.feig.FedmIscReaderConst.TYPE_ISCLRU1000:
 	                case de.feig.FedmIscReaderConst.TYPE_ISCLRU1002:
-	                case de.feig.FedmIscReaderConst.TYPE_ISCLRU2000:
 	                case de.feig.FedmIscReaderConst.TYPE_ISCLRU3000:
 	                    fedm.setProtocolFrameSupport(Fedm.PRT_FRAME_ADVANCED);
 	                    break;                    

@@ -100,10 +100,6 @@ public class BrmReadThread implements Runnable {
 		// read max. possible no. of data sets: request 255 data sets
 		try {
 			switch (readerInfo.readerType) {
-			case de.feig.FedmIscReaderConst.TYPE_ISCLR200:
-				fedm.setData(FedmIscReaderID.FEDM_ISCLR_TMP_BRM_SETS, sets);
-				fedm.sendProtocol((byte) 0x21);
-				break;
 			default:
 				fedm.setData(FedmIscReaderID.FEDM_ISC_TMP_ADV_BRM_SETS, sets);
 				fedm.sendProtocol((byte) 0x22);
