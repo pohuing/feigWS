@@ -1,95 +1,105 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://thymeleaf.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	  xsi:schemaLocation="http://thymeleaf.org ">
 <head>
 	<title>openTiming</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-	<meta http-equiv="pragma" content="no-cache" />
-	<meta http-equiv="cache-control" content="no-cache; no-store; max-age=0" />
-	<meta http-equiv="expires" content="0" />
-	<meta http-equiv="description" content="openTiming SportsTiming" />
-	<meta http-equiv="Content-Language" content="de" />
-	<meta name="decorator" content="main" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<meta http-equiv="pragma" content="no-cache"/>
+	<meta http-equiv="cache-control" content="no-cache; no-store; max-age=0"/>
+	<meta http-equiv="expires" content="0"/>
+	<meta http-equiv="description" content="openTiming SportsTiming"/>
+	<meta http-equiv="Content-Language" content="de"/>
+	<meta name="decorator" content="main"/>
 
 	<link rel="stylesheet" type="text/css" href="/webjars/font-awesome/css/font-awesome.min.css"/>
-    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
-    <link rel="stylesheet" th:href="@{/css/feigRFID.css}" />
- 
- 
+	<link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+	<link rel="stylesheet" th:href="@{/css/feigRFID.css}"/>
+
+
 </head>
 <body>
 
-	<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
-  		<a class="navbar-brand" href="#"><span class="navbar-brand-orange">feig</span>RFID</a>
-  		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-  			<span class="navbar-toggler-icon"></span>
-  		</button>
-  		
-  		<div class="collapse navbar-collapse text-right" id="navbarSupportedContent"></div>
-        <div class="top-config"><i onclick="$( '#config-modal' ).modal();" class="fa fa-cog fa-2x" aria-hidden="true"></i></div>
-  	</nav>
-	
-	<div class="main">
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+	<a class="navbar-brand" href="#"><span class="navbar-brand-orange">feig</span>RFID</a>
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+			aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	</button>
 
-		 <!-- <h3 class="text-center">Reader Config</h3>  -->
-         <div th:replace="maintabs"></div>
-		
-		<!-- Reader Tab panes -->
-		<div class="tab-content">
-           <div th:replace="reader-tab"></div>
+	<div class="collapse navbar-collapse text-right" id="navbarSupportedContent"></div>
+	<div class="top-config"><i onclick="$( '#config-modal' ).modal();" class="fa fa-cog fa-2x" aria-hidden="true"></i>
+	</div>
+</nav>
+
+<div class="main">
+
+	<!-- <h3 class="text-center">Reader Config</h3>  -->
+	<div th:replace="maintabs"></div>
+
+	<!-- Reader Tab panes -->
+	<div class="tab-content">
+		<div th:replace="reader-tab"></div>
+	</div>
+</div>
+
+<div class="content-table"></div>
+
+<div class="modal" tabindex="-1" role="dialog" id="modal" aria-labelledby="gridSystemModalLabel">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="gridSystemModalLabel">&nbsp;</h4>
+				<button type="button" class="close" data-dismiss="modal" onclick="clearModal(); return false;"
+						aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			</div>
+			<div class="modal-body" id="modal-body">
+				<span class="text-muted">loading...</span>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" onclick="clearModal(); return false;"
+						data-dismiss="modal">Close
+				</button>
+			</div>
 		</div>
 	</div>
+</div>
 
-	<div class="content-table"></div>
 
-	<div class="modal" tabindex="-1" role="dialog" id="modal" aria-labelledby="gridSystemModalLabel">
-		<div class="modal-dialog modal-lg" role="document">
-			<div class="modal-content">
-	     			<div class="modal-header">
-	     				<h4 class="modal-title" id="gridSystemModalLabel">&nbsp;</h4>
-	     				<button type="button" class="close" data-dismiss="modal" onclick="clearModal(); return false;" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	     			</div>
-	     			<div class="modal-body" id="modal-body">
-	     				<span class="text-muted">loading...</span>
-	     			</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" onclick="clearModal(); return false;" data-dismiss="modal">Close</button>
+<div class="modal" tabindex="-1" role="dialog" id="config-modal" aria-labelledby="gridSystemModalLabel">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="gridSystemModalLabel">&nbsp;</h4>
+				<button type="button" class="close" data-dismiss="modal" onclick="clearModal(); return false;"
+						aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			</div>
+			<div class="modal-body" id="modal-body">
+				<div class="form-group row justify-content-md-center">
+					<label th:for="ConfigWriteSleepTime" class="text-right col-sm-2 ml-auto col-form-label">write sleep time</label>
+					<div class="col-sm-3 mr-auto">
+						<input name="ConfigWriteSleepTime" maxlength="200" type="text" class="form-control"
+							   th:id="ConfigWriteSleepTime" placeholder="0" value="3"/>
+					</div>
 				</div>
-	   		</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" onclick="clearModal(); return false;"
+						data-dismiss="modal">Close
+				</button>
+			</div>
 		</div>
 	</div>
- 
- 
-    <div class="modal" tabindex="-1" role="dialog" id="config-modal" aria-labelledby="gridSystemModalLabel">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="gridSystemModalLabel">&nbsp;</h4>
-                        <button type="button" class="close" data-dismiss="modal" onclick="clearModal(); return false;" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    </div>
-                        <div class="modal-body" id="modal-body">
-                            <div class="form-group row justify-content-md-center">
-                                <label for="trValidTime" class="text-right col-sm-2 ml-auto col-form-label">write sleep time</label>
-                                <div class="col-sm-3 mr-auto">
-                                    <input name="ConfigWriteSleepTime" maxlength="200" type="text" class="form-control" th:id="ConfigWriteSleepTime" placeholder="0" value="3" />
-                                </div>
-                            </div>
-                    </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" onclick="clearModal(); return false;" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-	
- 
-    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
-    <script type="text/javascript" src="/webjars/popper.js/popper.min.js"></script>
-    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
-    <script type="text/javascript" th:src="@{/js/feigRFID.js}"></script>
-    
-    <div th:replace="js"></div>
-    
+</div>
+
+
+<script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="/webjars/popper.js/popper.min.js"></script>
+<script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" th:src="@{/js/feigRFID.js}"></script>
+
+<div th:replace="js"></div>
+
 </body>
 </html>

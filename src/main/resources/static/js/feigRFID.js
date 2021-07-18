@@ -1,6 +1,18 @@
 /*
  * 
  */
+const Actions = {
+	ANTENNA : 0,
+	TIME : 1,
+	VALIDTIME : 2,
+	POWER : 3,
+	RESET_READER_FILE : 4,
+	TOGGLE_MODE : 5,
+	TOGGLE_RELAIS : 6,
+	ANTENNA_CHECKBOXES :7,
+	INFO: 8,
+}
+
 var t;
 // Some kind of flag that ensures no two xhr requests happen at the same time?
 var isRunning = false;
@@ -93,41 +105,41 @@ function handleStopWrite(r) {
  * Actually does something more like setReaderData. This function is used to set various reader related properties such
  * as power and antenna state
  * @param {string} r the reader name as fed in from the readers application.properties with dots replaced as underscores
- * @param {string} a the action to be done, @TODO this should be an enum instead of ids in the forms of strings
+ * @param {Actions} a the action to be done
  */
 function getReaderData(r, a) {
 	var action = 'info';
 	var readerIp = r.replace(/_/g, '.');
 	// Generate the api endpoint route
 	switch(a) {
-		case 0:
+		case Actions.ANTENNA:
 			action = 'ant/' + $('#antenna-'+r).val();
 			break;
-		case 1:
+		case Actions.TIME:
 			action = 'time';
 			break;
-		case 2:
+		case Actions.VALIDTIME:
 			action = 'validtime/' + $('#transponderValidTime-'+r).val();
 			break;
-		case 3:
+		case Actions.POWER:
 			action = 'power/' + $('#power-'+r).val();
 			break;
-		case 4:
+		case Actions.RESET_READER_FILE:
 			action = 'resetReaderFile';
 			break;
-		case 5:
+		case Actions.TOGGLE_MODE:
 			// Toggle between BRM and ISO modes
 			var newmode = 'BRM';
 			if($('#mode-'+r).val() == 'BRM') { newmode = 'ISO'; }
 			action = 'mode/' + newmode;
 			break;
-		case 6:
+		case Actions.TOGGLE_RELAIS:
 			// Toggle between on and off
 			var newval = 'on';
 			if($('#relais-'+r).val() == 'on') { newval = 'off'; }
 			action = 'relais/' + newval;
 			break;
-		case 7:
+		case Actions.ANTENNA_CHECKBOXES:
 			let asString = parseCheckboxIntoBitsetString(r);
 			action = 'ant/' + asString;
 	}

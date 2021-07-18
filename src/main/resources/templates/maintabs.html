@@ -1,4 +1,5 @@
    <ul class="nav nav-tabs" role="tablist">
+     <!--/*@thymesVar id="readers" type="java.util.Set<java.lang.String>"*/-->
      <li class="nav-item" th:each="reader, r : ${readers}" th:with="readerName=${#strings.replace(reader,'.','_')}" role="presentation">
       <a th:class="(${reader} == ${readers[0]})? 'active nav-link' : 'nav-link'" th:href="@{#reader-{reader}(reader=${readerName})}" th:id="'tab-' + ${readerName} + '-main'" aria-controls="home" role="tab" data-toggle="tab">
        <span th:text="${reader}" />
