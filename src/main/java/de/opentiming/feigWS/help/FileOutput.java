@@ -35,7 +35,10 @@ public class FileOutput {
 		String now = new SimpleDateFormat("yyyy-MM-dd__HH_mm_ss_SSS").format(new Date());
 		try {
 			Path file = Paths.get(directory + "/" + filename);
+			if (!Files.isDirectory(file.getParent()))
+				Files.createDirectory(file.getParent());
 			if (Files.notExists(file)) {
+				Files.createFile(file);
 				Files.write(file, "".getBytes());
 			} else {
 				if(countLines(file) != 0) {
