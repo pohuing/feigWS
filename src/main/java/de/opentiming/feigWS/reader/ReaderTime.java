@@ -1,15 +1,9 @@
 package de.opentiming.feigWS.reader;
 import java.util.Date;
 
+import de.feig.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import de.feig.FePortDriverException;
-import de.feig.FeReaderDriverException;
-import de.feig.FedmException;
-import de.feig.FedmIscReader;
-import de.feig.FedmIscReaderID;
-import de.feig.FedmIscReaderInfo;
 
 
 public class ReaderTime {
@@ -61,26 +55,22 @@ public class ReaderTime {
 		try {
 			
 			FedmIscReaderInfo readerInfo = fedm.getReaderInfo();
-			switch(readerInfo.readerType)
-            {
-                case de.feig.FedmIscReaderConst.TYPE_ISCLRU1002:
-                	fedm.setData(FedmIscReaderID.FEDM_ISCLR_TMP_TIME_H, (byte)Byte.parseByte(timeArr[0]));
-                	fedm.setData(FedmIscReaderID.FEDM_ISCLR_TMP_TIME_M, (byte)Byte.parseByte(timeArr[1]));
-                	fedm.setData(FedmIscReaderID.FEDM_ISCLR_TMP_TIME_MS, (int)Byte.parseByte(timeArr[2]) * 1000 + 500);
-                	fedm.sendProtocol((byte)0x85);
-                	break;                    
-                default:
-        			fedm.setData(FedmIscReaderID.FEDM_ISC_TMP_DATE_CENTURY, (byte)century); // 20. Jahrhundert
-        			fedm.setData(FedmIscReaderID.FEDM_ISC_TMP_DATE_YEAR, (byte)year); // Jahr 04 im Jahrhundert
-        			fedm.setData(FedmIscReaderID.FEDM_ISC_TMP_DATE_MONTH, (byte)Byte.parseByte(dateArr[1])); // September
-        			fedm.setData(FedmIscReaderID.FEDM_ISC_TMP_DATE_DAY, (byte)Byte.parseByte(dateArr[2])); // 15. September
-        			fedm.setData(FedmIscReaderID.FEDM_ISC_TMP_DATE_TIMEZONE, (byte)0); // z.Zt. ungenutzt
-        			fedm.setData(FedmIscReaderID.FEDM_ISC_TMP_DATE_HOUR, (byte)Byte.parseByte(timeArr[0])); // Stunden
-        			fedm.setData(FedmIscReaderID.FEDM_ISC_TMP_DATE_MINUTE, (byte)Byte.parseByte(timeArr[1])); // Minuten
-        			fedm.setData(FedmIscReaderID.FEDM_ISC_TMP_DATE_MILLISECOND, (int)Byte.parseByte(timeArr[2]) * 1000 + 500); // Millisekunden (inkl. Sekunden)
-        			fedm.sendProtocol((byte)0x87);	// Datum und Uhrzeit setzen
-        			break;
-            }
+			if (readerInfo.readerType == FedmIscReaderConst.TYPE_ISCLRU1002) {
+				fedm.setData(FedmIscReaderID.FEDM_ISCLR_TMP_TIME_H, (byte) Byte.parseByte(timeArr[0]));
+				fedm.setData(FedmIscReaderID.FEDM_ISCLR_TMP_TIME_M, (byte) Byte.parseByte(timeArr[1]));
+				fedm.setData(FedmIscReaderID.FEDM_ISCLR_TMP_TIME_MS, (int) Byte.parseByte(timeArr[2]) * 1000 + 500);
+				fedm.sendProtocol((byte) 0x85);
+			} else {
+				fedm.setData(FedmIscReaderID.FEDM_ISC_TMP_DATE_CENTURY, (byte) century); // 20. Jahrhundert
+				fedm.setData(FedmIscReaderID.FEDM_ISC_TMP_DATE_YEAR, (byte) year); // Jahr 04 im Jahrhundert
+				fedm.setData(FedmIscReaderID.FEDM_ISC_TMP_DATE_MONTH, (byte) Byte.parseByte(dateArr[1])); // September
+				fedm.setData(FedmIscReaderID.FEDM_ISC_TMP_DATE_DAY, (byte) Byte.parseByte(dateArr[2])); // 15. September
+				fedm.setData(FedmIscReaderID.FEDM_ISC_TMP_DATE_TIMEZONE, (byte) 0); // z.Zt. ungenutzt
+				fedm.setData(FedmIscReaderID.FEDM_ISC_TMP_DATE_HOUR, (byte) Byte.parseByte(timeArr[0])); // Stunden
+				fedm.setData(FedmIscReaderID.FEDM_ISC_TMP_DATE_MINUTE, (byte) Byte.parseByte(timeArr[1])); // Minuten
+				fedm.setData(FedmIscReaderID.FEDM_ISC_TMP_DATE_MILLISECOND, (int) Byte.parseByte(timeArr[2]) * 1000 + 500); // Millisekunden (inkl. Sekunden)
+				fedm.sendProtocol((byte) 0x87);    // Datum und Uhrzeit setzen
+			}
 									
 		} catch (FePortDriverException e) {
 			e.printStackTrace();
@@ -140,27 +130,23 @@ public class ReaderTime {
 		try
 		{
 			FedmIscReaderInfo readerInfo = fedm.getReaderInfo();
-			switch(readerInfo.readerType)
-            {
-                case de.feig.FedmIscReaderConst.TYPE_ISCLRU1002:
-                	fedm.sendProtocol((byte)0x86);
-                	std    = fedm.getIntegerData(FedmIscReaderID.FEDM_ISCLR_TMP_TIME_H);
-                	min    = fedm.getIntegerData(FedmIscReaderID.FEDM_ISCLR_TMP_TIME_M);
-                	sek    = fedm.getIntegerData(FedmIscReaderID.FEDM_ISCLR_TMP_TIME_MS);
-                	date   = getComputerDate();
-                	break;                    
-                default:
-                	fedm.sendProtocol((byte)0x88);
-            		century = fedm.getIntegerData(FedmIscReaderID.FEDM_ISC_TMP_DATE_CENTURY);
-            		year    = fedm.getIntegerData(FedmIscReaderID.FEDM_ISC_TMP_DATE_YEAR);
-            		month   = fedm.getIntegerData(FedmIscReaderID.FEDM_ISC_TMP_DATE_MONTH);
-            		day     = fedm.getIntegerData(FedmIscReaderID.FEDM_ISC_TMP_DATE_DAY);
-            		std     = fedm.getIntegerData(FedmIscReaderID.FEDM_ISC_TMP_DATE_HOUR);
-            		min     = fedm.getIntegerData(FedmIscReaderID.FEDM_ISC_TMP_DATE_MINUTE);
-            		sek     = fedm.getIntegerData(FedmIscReaderID.FEDM_ISC_TMP_DATE_MILLISECOND);
-                    date    = century + "" + year + "-" + month + "-" + day;
-            		break;
-            }
+			if (readerInfo.readerType == FedmIscReaderConst.TYPE_ISCLRU1002) {
+				fedm.sendProtocol((byte) 0x86);
+				std = fedm.getIntegerData(FedmIscReaderID.FEDM_ISCLR_TMP_TIME_H);
+				min = fedm.getIntegerData(FedmIscReaderID.FEDM_ISCLR_TMP_TIME_M);
+				sek = fedm.getIntegerData(FedmIscReaderID.FEDM_ISCLR_TMP_TIME_MS);
+				date = getComputerDate();
+			} else {
+				fedm.sendProtocol((byte) 0x88);
+				century = fedm.getIntegerData(FedmIscReaderID.FEDM_ISC_TMP_DATE_CENTURY);
+				year = fedm.getIntegerData(FedmIscReaderID.FEDM_ISC_TMP_DATE_YEAR);
+				month = fedm.getIntegerData(FedmIscReaderID.FEDM_ISC_TMP_DATE_MONTH);
+				day = fedm.getIntegerData(FedmIscReaderID.FEDM_ISC_TMP_DATE_DAY);
+				std = fedm.getIntegerData(FedmIscReaderID.FEDM_ISC_TMP_DATE_HOUR);
+				min = fedm.getIntegerData(FedmIscReaderID.FEDM_ISC_TMP_DATE_MINUTE);
+				sek = fedm.getIntegerData(FedmIscReaderID.FEDM_ISC_TMP_DATE_MILLISECOND);
+				date = century + "" + year + "-" + month + "-" + day;
+			}
 			
 		} catch (FePortDriverException e) {
 			e.printStackTrace();

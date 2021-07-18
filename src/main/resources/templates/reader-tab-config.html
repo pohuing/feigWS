@@ -47,7 +47,7 @@
        <div class="form-group row justify-content-md-center">
           <label for="antenna" class="text-right col-sm-2 ml-auto col-form-label">Antennen:</label>
           <div class="col-sm-3">
-              <input name="antenna" maxlength="200" type="text" class="form-control" th:id="@{antenna-{reader}(reader=${readerName})}" placeholder="Antennen" value="" />
+              <input name="antenna" maxlength="200" type="text" class="form-control" title="Ein Ausschalten der Antennen. 0 für aus 1 für ein, 0011 schaltet Antennen 1 und 2 ein." th:id="@{antenna-{reader}(reader=${readerName})}" placeholder="Antennen" value="" />
           </div>
           <div class="col-sm-1 mr-auto">
               <a class="btn btn-success btn-w90" href="#" th:onclick="'getReaderData(\'' + ${readerName} + '\',0); return false;'" role="button">SET</a>

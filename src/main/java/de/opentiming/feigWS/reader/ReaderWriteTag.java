@@ -149,7 +149,7 @@ public class ReaderWriteTag {
 			 * Eindeutige Seriennummer definieren
 			 */
 			String uniqeNr = "";
-			if (uniqeID == true) {
+			if (uniqeID) {
 				uniqeNr = getUniqeNumber();
 			}
 

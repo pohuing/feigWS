@@ -18,7 +18,7 @@ public class FedmConnect implements FeIscListener {
 	private int port;
 	private boolean logReaderProtocol = false;
 	
-	public FedmConnect() throws FedmException, Exception {
+	public FedmConnect() throws Exception {
 		fedm = new de.feig.FedmIscReader();
 	}
 	
@@ -26,9 +26,7 @@ public class FedmConnect implements FeIscListener {
 	 * Verbindung mit dem Reader aufbauen.
 	 * 
 	 * Vorher wird geprüft, ob der Reader verfügbar und nicht bereits belegt ist.
-	 * @param port 
-	 * @param host 
-	 */
+     */
 	public void fedmOpenConnection() {
 				
 		try {

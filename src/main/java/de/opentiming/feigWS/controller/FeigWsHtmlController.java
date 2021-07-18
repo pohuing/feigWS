@@ -16,7 +16,7 @@ public class FeigWsHtmlController {
 	@Resource(name = "connections")
 	private Map<String, FedmConnect> connections;
 	
-    @RequestMapping("/app")
+    @RequestMapping("/")
     public String greeting(Model model) {
     	model.addAttribute("readers", connections.keySet());
         return "index";

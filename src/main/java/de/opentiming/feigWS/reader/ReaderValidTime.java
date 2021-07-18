@@ -46,18 +46,8 @@ public class ReaderValidTime {
 
 			//LogWriter.write("Reset...");
 
-		} catch (FePortDriverException e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
-			log.error("{} reader connection brocken",  con.getHost());
-		} catch (FeReaderDriverException e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
-			log.error("{} reader connection brocken",  con.getHost());
-		} catch (FedmException e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
-			log.error("{} reader connection brocken",  con.getHost());
+		} catch (FePortDriverException | FedmException | FeReaderDriverException e) {
+			log.error("{} reader connection broken",  con.getHost());
 		}
 
 		return true;

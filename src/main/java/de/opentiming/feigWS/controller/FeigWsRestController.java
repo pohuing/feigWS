@@ -8,10 +8,7 @@ import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import de.opentiming.feigWS.reader.ReaderAntenna;
 import de.opentiming.feigWS.help.FileOutput;
@@ -38,7 +35,16 @@ public class FeigWsRestController {
 	
 	@Resource(name = "brmthreads")
 	private Map<String, BrmReadThread> brmthreads;
-		
+
+	/**
+	 * @param reader ip form of reader from application.properties
+	 * @return json object with fields "mode"
+	 * 									"transponderValidTime"
+	 * 									"readerTime"
+	 * 									"antenna"
+	 * 									"power"
+	 * 									"relais"
+	 */
     @RequestMapping(value="/{reader}/info", method=RequestMethod.GET)
     public Map<String, Object> getReaderInfo(@PathVariable String reader) {
     	FedmConnect con = connections.get(reader);
@@ -57,6 +63,11 @@ public class FeigWsRestController {
     	return config;
     }
 
+	/**
+	 * @param reader ip representation of an existing reader
+	 * @param value Binary bitset of antennas to be enabled, 1110 would enable antenna 2, 3 and 4
+	 * @return always true
+	 */
     @RequestMapping(value="/{reader}/ant/{value}", method=RequestMethod.GET)
     public boolean setAntenna(@PathVariable String reader, @PathVariable String value) {
     	FedmConnect con = connections.get(reader);
@@ -64,6 +75,11 @@ public class FeigWsRestController {
     	return a.setAntennas(value);
     }
 
+	/**
+	 * @param reader ip representation of an existing reader
+	 * @param value BRM or ISO, defaults to BRM on invalid input
+	 * @return always true
+	 */
     @RequestMapping(value="/{reader}/mode/{value}", method=RequestMethod.GET)
     public boolean setMode(@PathVariable String reader, @PathVariable String value) {
     	FedmConnect con = connections.get(reader);
@@ -132,6 +148,9 @@ public class FeigWsRestController {
 		return w.writeTag(value);
     }
 
+	/**
+	 * @return Set of all reader connections
+	 */
     @RequestMapping(value="/readers", method=RequestMethod.GET)
     public Set<String> getReaders() {
     	return connections.keySet();

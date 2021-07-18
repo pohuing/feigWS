@@ -4,19 +4,10 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 
+import de.feig.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.feig.FeHexConvert;
-import de.feig.FePortDriverException;
-import de.feig.FeReaderDriverException;
-import de.feig.FedmBrmTableItem;
-import de.feig.FedmException;
-import de.feig.FedmIscReader;
-import de.feig.FedmIscReaderConst;
-import de.feig.FedmIscReaderID;
-import de.feig.FedmIscReaderInfo;
-import de.feig.FedmIscRssiItem;
 import de.opentiming.feigWS.help.FileOutput;
 
 
@@ -30,7 +21,6 @@ import de.opentiming.feigWS.help.FileOutput;
  * - Wenn der Reader nicht verbunden werden konnte wird dies alle 5 sec. erneut versucht
  * 
  */
-
 public class BrmReadThread implements Runnable {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -84,9 +74,6 @@ public class BrmReadThread implements Runnable {
 
 	/**
 	 * Auslesen des Buffers
-	 * 
-	 * @param fedm
-	 * @param sets
 	 */
 	private void readBuffer() {
 
@@ -102,7 +89,9 @@ public class BrmReadThread implements Runnable {
 			switch (readerInfo.readerType) {
 			default:
 				fedm.setData(FedmIscReaderID.FEDM_ISC_TMP_ADV_BRM_SETS, sets);
+				// 0x22 is ReadBuffer
 				fedm.sendProtocol((byte) 0x22);
+
 				break;
 			}
 
@@ -236,17 +225,14 @@ public class BrmReadThread implements Runnable {
 
 		} catch (Exception e) {
 			//e.printStackTrace();
-			log.error("{} reader connection brocken",  con.getHost());
+			log.error("{} reader connection broken",  con.getHost());
 		}
 	}
 
 	/**
 	 * 
 	 * Liefert den RSSI Wert und die Antennennummer
-	 * 
-	 * @param fedmBrmTableItem
-	 * @param key
-	 * @return
+	 *
 	 */
 	private String getAntData(FedmBrmTableItem fedmBrmTableItem, String key) {
 
@@ -288,8 +274,7 @@ public class BrmReadThread implements Runnable {
 
 	/**
 	 * Liefert die aktuelle Zeit des Hosts
-	 * 
-	 * @return
+	 *
 	 */
 	
 	public String getComputerTime() {
@@ -300,12 +285,10 @@ public class BrmReadThread implements Runnable {
 
 	/**
 	 * Liefert die Antennn an denen ein Tag erkannt wurde im Dual Format
-	 * 
-	 * @param antNr
-	 * @return
+	 *
 	 */
 	private String getDualValue(String antNr) {
-
+		// TODO: 18.07.2021 Replace with the standard library's Integer.toBinaryString
 		int r; // Rest r
 
 		int dez = Integer.parseInt(antNr, 16);

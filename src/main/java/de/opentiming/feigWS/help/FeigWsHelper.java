@@ -11,10 +11,8 @@ public class FeigWsHelper {
 
 	/**
 	 * Zählt die Zeilen einer Textdatei
-	 * 
-	 * @param file
-	 * @return
-	 */
+	 *
+     */
 	public static int countLines(Path file) {
 		int count = 0;
 		try {
@@ -29,12 +27,8 @@ public class FeigWsHelper {
 
 	/**
 	 * Prüft, ob der TCP Port zu öffnen ist
-	 * 
-	 * @param ip
-	 * @param port
-	 * @param timeout
-	 * @return
-	 */
+	 *
+     */
 	public static boolean portIsOpen(String ip, int port, int timeout) {
         try {
             Socket socket = new Socket();

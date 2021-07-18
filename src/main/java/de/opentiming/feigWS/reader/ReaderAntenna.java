@@ -28,10 +28,8 @@ public class ReaderAntenna {
 	 * Der LRU2000 kann mit 0x76 die angeschlossenen Antennen automatisch erkennen
 	 * 
 	 * Dem LRU1002 muss man die Antennen als Binary Sting übergeben (erste antenne hinten)
-	 * 
-	 * @param antennas
-	 * @return 
-	 */
+	 * @param antennas Binary string of antennas to be enabled. 1110 would enable antenna 2, 3 and 4
+     */
 	public boolean setAntennas(String antennas) {
 		
 		int ant;
@@ -65,18 +63,9 @@ public class ReaderAntenna {
 	    			break;
 	        }
 			
-		} catch (FePortDriverException e) {
+		} catch (FePortDriverException | FedmException | FeReaderDriverException e) {
 			// TODO Auto-generated catch block
-			//e.printStackTrace();
-			log.error("{} reader connection brocken",  con.getHost());
-		} catch (FeReaderDriverException e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
-			log.error("{} reader connection brocken",  con.getHost());
-		} catch (FedmException e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
-			log.error("{} reader connection brocken",  con.getHost());
+			log.error("{} reader connection broken",  con.getHost());
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -2,6 +2,7 @@
  * 
  */
 var t;
+// Some kind of flag that ensures no two xhr requests happen at the same time?
 var isRunning = false;
 
 function handleTabButtons(r) {
@@ -88,10 +89,16 @@ function handleStopWrite(r) {
 }
 
 
+/**
+ * Catch all function for getting various reader information from the server. a acts as the kind of information to be requested
+ * It appears also to never actually use the result of the api calls for anything ever?
+ * @param {string} r the reader name as fed in from the readers application.properties with dots replaced as underscores
+ * @param {string} a the action to be done, @TODO this should be an enum instead of ids in the forms of strings
+ */
 function getReaderData(r, a) {
 	var action = 'info';
 	var readerIp = r.replace(/_/g, '.');
-	
+	// Generate the api endpoint route
 	switch(a) {
 		case 0:
 			action = 'ant/' + $('#antenna-'+r).val();
@@ -109,11 +116,13 @@ function getReaderData(r, a) {
 			action = 'resetReaderFile';
 			break;
 		case 5:
+			// Toggle between BRM and ISO modes
 			var newmode = 'BRM';
 			if($('#mode-'+r).val() == 'BRM') { newmode = 'ISO'; }
 			action = 'mode/' + newmode;
 			break;
 		case 6:
+			// Toggle between on and off
 			var newval = 'on';
 			if($('#relais-'+r).val() == 'on') { newval = 'off'; }
 			action = 'relais/' + newval;
@@ -125,7 +134,7 @@ function getReaderData(r, a) {
 	if(action != 'info') { 
 		isRunning = true;
 		var jqxhr = $.getJSON( '/api/' + readerIp + '/' + action);
-		jqxhr.done(function( data ) {
+		jqxhr.done(function( _data ) {
 			getReaderInfo(r);
 			isRunning = false;
 		});
@@ -135,7 +144,11 @@ function getReaderData(r, a) {
 
 }
 
-
+/**
+ * Updates the config boxes and reader output boxes of reader r
+ * Calls de.opentiming.feigWS.reader.ReaderInfo api
+ * @param r
+ */
 function getReaderInfo(r) {
 	
 	var readerIp = r.replace(/_/g, '.');

@@ -20,6 +20,11 @@ public class ReaderMode {
 		this.fedm = con.getFedmIscReader();
 	}
 
+	/**
+	 * Sets reader mode to ISO or BRM, defaulting to BRM on invalid input
+	 * @param mode BRM or ISO though anything that isn't BRM defaults to ISO
+	 * @return
+	 */
 	public synchronized boolean setMode(String mode) {
 		
 		byte modeAdr = 1;
@@ -43,18 +48,8 @@ public class ReaderMode {
 			fedm.sendProtocol((byte)0x63);
 			
 			log.info("{} setting {} mode",  con.getHost(), mode);
-		} catch (FePortDriverException e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
-			log.error("{} reader connection brocken",  con.getHost());
-		} catch (FeReaderDriverException e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
-			log.error("{} reader connection brocken",  con.getHost());
-		} catch (FedmException e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
-			log.error("{} reader connection brocken",  con.getHost());
+		} catch (FePortDriverException | FeReaderDriverException | FedmException e) {
+			log.error("{} reader connection broken",  con.getHost());
 		}
 
 		return true;

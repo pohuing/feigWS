@@ -34,14 +34,14 @@ public class FeigWsApplicationRunner implements ApplicationRunner {
 		for( String reader : readers) {
 			
 			/*
-			 * Output Fiele rollen
+			 * Roll output file
 			 */
 			FileOutput fo = new FileOutput(env.getProperty("file.output"));
 			fo.setHost(reader);
 			fo.resetReaderFile();
 			
 			/*
-			 * Readerconnection konfigurieren und global speichern
+			 * Configure connection to reader and store in global bean resource
 			 */
 			FedmConnect con = new FedmConnect();
 			con.logReaderProtocol(Boolean.valueOf(env.getProperty("reader.protocol")));
@@ -51,7 +51,7 @@ public class FeigWsApplicationRunner implements ApplicationRunner {
 			connections.put(reader, con);
 			
 			/*
-			 * Reader Auslesen
+			 * Start Reader thread and store in global bean resource
 			 */			
 			StartReaderThread srt = new StartReaderThread(con, env.getProperty("file.output"), env.getProperty("reader.sleep"));
 		    brmthreads.put(reader, srt.getBrmReadThread());

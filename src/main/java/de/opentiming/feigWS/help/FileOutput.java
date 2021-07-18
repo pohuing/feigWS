@@ -22,8 +22,14 @@ public class FileOutput {
 	}
 
 
+	/**
+	 * Crates new .out log file
+	 * If a log file for the current host already exists (for example from a previous session) that file gets renamed to
+	 * the current date and time
+	 * @return true if file creation and truncation worked, false if some exception was thrown
+	 */
 	public boolean resetReaderFile() {
-
+	// TODO: 18.07.2021 @TODO build different behaviour where files get named to the current time and date on creation, instead of on move
 		String newfilename = host.replaceAll("\\.", "_") + ".out";
 		
 		String now = new SimpleDateFormat("yyyy-MM-dd__HH_mm_ss_SSS").format(new Date());
@@ -76,12 +82,7 @@ public class FileOutput {
 	}
 
 	/**
-	 * 
-	 * Schreibt Textdatei
-	 * 
-	 * @param filename
-	 * @param content
-	 * @return
+	 * Writes to file, creates file if none exists
 	 */
 	public void writeToFile(String content) throws IOException {
 		
@@ -96,10 +97,7 @@ public class FileOutput {
 	
 	
 	/**
-	 * Zählt die Zeilen einer Textdatei
-	 * 
-	 * @param file
-	 * @return
+	 * Counts number of lines in file
 	 */
 	public static int countLines(Path file) {
 		int count = 0;
@@ -111,13 +109,20 @@ public class FileOutput {
 		}
 		return count;
 	}
-	
-	
+
+	/**
+	 * Create filename for current logging session with reader host
+	 * @param host host in . separated octet form
+	 * @return Aktuell_[host with underscore separation].out
+	 */
 	public String getFilename(String host) {
 		String filename = "Aktuell_" + host.replaceAll("\\.", "_") + ".out";
 		return filename;
 	}
-	
+
+	/**
+	 * Updates reader name and sets file name
+	 */
 	public void setHost(String host) {
 		this.host = host;
 		this.filename = getFilename(host);
