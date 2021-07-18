@@ -54,7 +54,27 @@
           </div>
        </div>
 
-       <div class="form-group row justify-content-md-center">
+        <div class="form-group row justify-content-md-center">
+            <label for="antenna" class="text-right col-sm-2 ml-auto col-form-label">Antennen:</label>
+            <div class="col-sm-3">
+                <label th:for="@{antenna1-{reader}(reader=${readerName})}">1:</label>
+                <input name="antenna_1" th:id="@{antenna1-{reader}(reader=${readerName})}" type="checkbox"/>
+
+                <label th:for="@{antenna2-{reader}(reader=${readerName})}">2:</label>
+                <input name="antenna_2" th:id="@{antenna2-{reader}(reader=${readerName})}" type="checkbox"/>
+
+                <label th:for="@{antenna3-{reader}(reader=${readerName})}">3:</label>
+                <input name="antenna_3" th:id="@{antenna3-{reader}(reader=${readerName})}" type="checkbox"/>
+
+                <label th:for="@{antenna4-{reader}(reader=${readerName})}">4:</label>
+                <input name="antenna_4" th:id="@{antenna4-{reader}(reader=${readerName})}" type="checkbox"/>
+            </div>
+            <div class="col-sm-1 mr-auto">
+                <a class="btn btn-success btn-w90" href="#" th:onclick="'getReaderData(\'' + ${readerName} + '\',7); return false;'" role="button">SET</a>
+            </div>
+        </div>
+
+       <div class="form-group row justify-content-md-center" >
           <label for="antenna" class="text-right col-sm-2 ml-auto col-form-label">Relais:</label>
           <div class="col-sm-3">
               <input name="relais" maxlength="200" type="text" class="form-control" th:id="@{relais-{reader}(reader=${readerName})}" placeholder="on" value="on" readonly="true" />

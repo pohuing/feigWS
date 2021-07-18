@@ -90,8 +90,8 @@ function handleStopWrite(r) {
 
 
 /**
- * Catch all function for getting various reader information from the server. a acts as the kind of information to be requested
- * It appears also to never actually use the result of the api calls for anything ever?
+ * Actually does something more like setReaderData. This function is used to set various reader related properties such
+ * as power and antenna state
  * @param {string} r the reader name as fed in from the readers application.properties with dots replaced as underscores
  * @param {string} a the action to be done, @TODO this should be an enum instead of ids in the forms of strings
  */
@@ -126,6 +126,10 @@ function getReaderData(r, a) {
 			var newval = 'on';
 			if($('#relais-'+r).val() == 'on') { newval = 'off'; }
 			action = 'relais/' + newval;
+			break;
+		case 7:
+			let asString = parseCheckboxIntoBitsetString(r);
+			action = 'ant/' + asString;
 	}
 	
 	$('#faultstring-' + r).css("display","none");
@@ -134,6 +138,7 @@ function getReaderData(r, a) {
 	if(action != 'info') { 
 		isRunning = true;
 		var jqxhr = $.getJSON( '/api/' + readerIp + '/' + action);
+		// After action done, update website
 		jqxhr.done(function( _data ) {
 			getReaderInfo(r);
 			isRunning = false;
@@ -142,6 +147,19 @@ function getReaderData(r, a) {
 		getReaderInfo(r);
 	}
 
+}
+
+/**
+ * @param r the reader name just like in getReaderData
+ * @returns {string} The bitset string representation of the check boxes for reader state
+ */
+function parseCheckboxIntoBitsetString(r) {
+	let a1 = $('#antenna1-'+r)[0].checked ? "1" : "0";
+	let a2 = $('#antenna2-'+r)[0].checked ? "1" : "0";
+	let a3 = $('#antenna3-'+r)[0].checked ? "1" : "0";
+	let a4 = $('#antenna4-'+r)[0].checked ? "1" : "0";
+
+	return a4+a3+a2+a1
 }
 
 /**
@@ -165,6 +183,9 @@ function getReaderInfo(r) {
 				if(key == "files") {
 					setTableData(r, val, readerIp);
 				}
+				if (key == "antenna"){
+					setAntennaCheckboxes(r, val);
+				}
 				
 				$('#' + key + '-' + r).val(val);
 			});
@@ -177,6 +198,17 @@ function getReaderInfo(r) {
 	});
 }
 
+/**
+ * Updates the checkboxes or reader r
+ * @param r
+ * @param antenna
+ */
+function setAntennaCheckboxes(r, antenna){
+	$('#antenna1-'+r)[0].checked = antenna[3] === "1";
+	$('#antenna2-'+r)[0].checked = antenna[2] === "1";
+	$('#antenna3-'+r)[0].checked = antenna[1] === "1";
+	$('#antenna4-'+r)[0].checked = antenna[0] === "1";
+}
 
 function setTableData(r, val, readerIp) {
 	table = "";
