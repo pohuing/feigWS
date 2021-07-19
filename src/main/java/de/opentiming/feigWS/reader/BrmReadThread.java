@@ -1,34 +1,33 @@
 package de.opentiming.feigWS.reader;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-
 import de.feig.*;
+import de.opentiming.feigWS.help.FileOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.opentiming.feigWS.help.FileOutput;
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
 
 
 /**
  *
  * @author Martin Bussmann
- * 
+ *
  * Thread der den Buffer ausließt und die Inhalte in eine Textdatei schreibt.
- * 
+ *
  * - Nach einem Reconnect wird die Zeit automatisch neu gesetzt.
  * - Wenn der Reader nicht verbunden werden konnte wird dies alle 5 sec. erneut versucht
- * 
+ *
  */
 public class BrmReadThread implements Runnable {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
-	private FileOutput fo;
+	private final FileOutput fo;
 	private boolean firstConnect;
-	private FedmConnect con;
+	private final FedmConnect con;
 	private int sleepTime;
-	private FedmIscReader fedm;
+	private final FedmIscReader fedm;
 	private int sets = 255;
 	private boolean running;
 
@@ -41,18 +40,15 @@ public class BrmReadThread implements Runnable {
 	}
 
 	public synchronized void run() {
-		try {			
+		try {
 			while (isRunning()) {
-
 				con.fedmOpenConnection();
-
 				if (con.isConnected()) {
-					
-					if (firstConnect) {
 
+					if (firstConnect) {
 						firstConnect = false;
 					}
-					
+
 					fedm.setTableSize(FedmIscReaderConst.BRM_TABLE, 256);
 					readBuffer();
 
@@ -82,7 +78,7 @@ public class BrmReadThread implements Runnable {
 		}
 
 		FedmIscReaderInfo readerInfo = fedm.getReaderInfo();
-		
+
 		// read data from reader
 		// read max. possible no. of data sets: request 255 data sets
 		try {
@@ -102,7 +98,7 @@ public class BrmReadThread implements Runnable {
 				brmItems = (FedmBrmTableItem[]) fedm.getTable(FedmIscReaderConst.BRM_TABLE);
 
 			if (brmItems != null) {
-				
+
 				String[] serialNumberHex = new String[brmItems.length];
 				// String[] serialNumber = new String[brmItems.length];
 				int[] serialNumber = new int[brmItems.length];
@@ -118,7 +114,6 @@ public class BrmReadThread implements Runnable {
 				String csvFileContent = "";
 
 				for (int i = 0; i < brmItems.length; i++) {
-										
 					if (brmItems[i].isDataValid(FedmIscReaderConst.DATA_SNR)) {
 						serialNumberHex[i] = brmItems[i].getStringData(FedmIscReaderConst.DATA_SNR);
 
@@ -134,8 +129,7 @@ public class BrmReadThread implements Runnable {
 						// serialNumber[i] =
 						// serialNumberHex[i].substring(serialNumberHex[i].length()-4,
 						// serialNumberHex[i].length());
-						serialNumber[i] = Integer.parseInt(serialNumberHex[i].substring(serialNumberHex[i].length() - 4,
-								serialNumberHex[i].length()), 16);
+						serialNumber[i] = Integer.parseInt(serialNumberHex[i].substring(serialNumberHex[i].length() - 4), 16);
 						uniqeNumber[i] = serialNumberHex[i].substring(0, serialNumberHex[i].length() - 4);
 
 					}
@@ -165,37 +159,20 @@ public class BrmReadThread implements Runnable {
 							date[i] = ReaderTime.getComputerDate();
 							break;
 						default:
-							String year = Integer.toString(brmItems[i].getReaderTime().getYear());
-							String month = Integer.toString(brmItems[i].getReaderTime().getMonth());
-							String day = Integer.toString(brmItems[i].getReaderTime().getDay());
-							date[i] = year + "-" + month + "-" + day;
+							date[i] = brmItems[i].getReaderTime().getYear()
+                                    + "-" + brmItems[i].getReaderTime().getMonth()
+                                    + "-" + brmItems[i].getReaderTime().getDay();
 							break;
 						}
-
-						String hour = Integer.toString(brmItems[i].getReaderTime().getHour());
-						if (hour.length() == 1) {
-							hour = "0" + hour;
-						}
-						String minute = Integer.toString(brmItems[i].getReaderTime().getMinute());
-						if (minute.length() == 1) {
-							minute = "0" + minute;
-						}
-						String second = Integer.toString(brmItems[i].getReaderTime().getMilliSecond() / 1000);
-						if (second.length() == 1) {
-							second = "0" + second;
-						}
-						String millisecond = Integer.toString(brmItems[i].getReaderTime().getMilliSecond() % 1000);
-						if (millisecond.length() == 1) {
-							millisecond = "0" + millisecond;
-						}
-						if (millisecond.length() == 2) {
-							millisecond = "0" + millisecond;
-						}
+						String hour = String.format("%01d", brmItems[i].getReaderTime().getHour());
+						String minute = String.format("%01d", brmItems[i].getReaderTime().getMinute());
+						String second = String.format("%01d", brmItems[i].getReaderTime().getMilliSecond() / 1000);
+                        String millisecond = String.format("%03d", brmItems[i].getReaderTime().getMilliSecond() % 1000);
 
 						time[i] = hour + ":" + minute + ":" + second + "." + millisecond;
 					}
 
-					csvFileContent = csvFileContent + "\n" + Integer.toString(serialNumber[i]) + ";" + date[i] + ";"
+					csvFileContent = csvFileContent + "\n" + serialNumber[i] + ";" + date[i] + ";"
 							+ time[i].substring(0, 8) + ";" + time[i].substring(9, 12) + ";" + con.getHost() + ";" + antNr[i]
 							+ ";" + rssi[i] + ";" + uniqeNumber[i] + ";" + cTime;
 
@@ -215,7 +192,7 @@ public class BrmReadThread implements Runnable {
 
 				try {
 					fo.writeToFile(csvFileContent);
-					if ((fedm.getLastError() >= 0)) {
+					if (fedm.getLastError() >= 0) {
 						clearBuffer(this.fedm);
 					}
 				} catch (IOException e) {
@@ -230,7 +207,7 @@ public class BrmReadThread implements Runnable {
 	}
 
 	/**
-	 * 
+	 *
 	 * Liefert den RSSI Wert und die Antennennummer
 	 *
 	 */
@@ -276,7 +253,7 @@ public class BrmReadThread implements Runnable {
 	 * Liefert die aktuelle Zeit des Hosts
 	 *
 	 */
-	
+
 	public String getComputerTime() {
 		Date now = new java.util.Date();
 		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("HH:mm:ss");
@@ -347,5 +324,5 @@ public class BrmReadThread implements Runnable {
 	public void setSleepTime(int sleepTime) {
 		this.sleepTime = sleepTime;
 	}
-	
+
 }
