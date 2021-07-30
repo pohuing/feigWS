@@ -1,12 +1,8 @@
 package de.opentiming.feigWS.reader;
+
+import de.feig.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import de.feig.FePortDriverException;
-import de.feig.FeReaderDriverException;
-import de.feig.FedmException;
-import de.feig.FedmIscReader;
-import de.feig.FedmIscReaderID;
 
 public class ReaderPower {
 	
@@ -30,7 +26,7 @@ public class ReaderPower {
 			fedm.setData(FedmIscReaderID.FEDM_ISC_TMP_READ_CFG, (byte)0);
 			fedm.setData(FedmIscReaderID.FEDM_ISC_TMP_READ_CFG_LOC, true); // aus dem EPROM lesen
 			fedm.setData(FedmIscReaderID.FEDM_ISC_TMP_READ_CFG_ADR, powerAdr1);
-			fedm.sendProtocol((byte)0x80);
+			fedm.sendProtocol((byte)0x80); // 0x80 is Read Configuration
 			
 			// schreiben
 			fedm.setData(FedmIscReaderID.FEDM_ISC_TMP_WRITE_CFG, (byte)0);
@@ -38,7 +34,7 @@ public class ReaderPower {
 			fedm.setData(FedmIscReaderID.FEDM_ISC_TMP_WRITE_CFG_ADR, powerAdr1);
 			fedm.setConfigPara(de.feig.ReaderConfig.AirInterface.Antenna.UHF.No1.OutputPower, power, true);
 			
-			fedm.sendProtocol((byte)0x81);
+			fedm.sendProtocol((byte)0x81); // 0x81 is Write Configuration
 
 			fedm.setData(FedmIscReaderID.FEDM_ISC_TMP_READ_CFG, (byte)0);
 			fedm.setData(FedmIscReaderID.FEDM_ISC_TMP_READ_CFG_LOC, true); // aus dem EPROM lesen
@@ -56,21 +52,11 @@ public class ReaderPower {
 			fedm.sendProtocol((byte)0x81);			
 			fedm.sendProtocol((byte)0x63);
 
-		} catch (FePortDriverException e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
-			log.error("{} reader connection brocken",  con.getHost());
-		} catch (FeReaderDriverException e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
-			log.error("{} reader connection brocken",  con.getHost());
-		} catch (FedmException e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
+		} catch (FePortDriverException | FeReaderDriverException | FedmException e) {
 			log.error("{} reader connection brocken",  con.getHost());
 		}
-		
-		return true;
+
+        return true;
 
 	}
 	

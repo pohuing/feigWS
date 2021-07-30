@@ -1,5 +1,7 @@
 package de.opentiming.feigWS.reader;
 
+import de.opentiming.feigWS.help.FileOutput;
+
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.DirectoryStream;
@@ -11,8 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.opentiming.feigWS.help.FileOutput;
-
 public class ReaderResultFiles {
 
 	private String directory;
@@ -21,8 +21,8 @@ public class ReaderResultFiles {
 		this.directory = directory;
 	}
 
-	public ArrayList<Object> getResultFiles(String host) {
-		ArrayList<Object> files = new ArrayList<Object>();
+	public List<Map<String,String>> getResultFiles(String host) {
+		ArrayList<Map<String,String>> files = new ArrayList<>();
 		String filter = "*" + host.replaceAll("\\.", "_") + "*";
 		try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(directory), filter)) {
             for (Path path : directoryStream) {
@@ -40,7 +40,11 @@ public class ReaderResultFiles {
 		
 		return files;
 	}
-	
+
+    /**
+     * Returns the contents of readerFile without the csv header
+     * @param readerFile a file name without file extension
+     */
 	public List<String> getFileContent(String readerFile) {
 		
 		List<String> lines = null;
