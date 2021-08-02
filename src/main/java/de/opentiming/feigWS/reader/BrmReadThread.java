@@ -201,7 +201,7 @@ public class BrmReadThread implements Runnable {
 			}
 
 		} catch (Exception e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 			log.error("{} reader connection broken",  con.getHost());
 		}
 	}
@@ -217,9 +217,8 @@ public class BrmReadThread implements Runnable {
 		byte b = 0;
 		try {
 			if (fedmBrmTableItem.getIntegerData(FedmIscReaderConst.DATA_ANT_NR) == 0) {
-				HashMap<Integer, FedmIscRssiItem> item;
+                HashMap<Integer, FedmIscRssiItem> item = fedmBrmTableItem.getRSSI();
 
-				item = fedmBrmTableItem.getRSSI();
 				for (int i = 1; i < 5; i++) {
 					if (item.get(i) != null) {
 						FedmIscRssiItem fedmIscRssiItem = (item.get(i));
@@ -296,12 +295,11 @@ public class BrmReadThread implements Runnable {
 		// clear all read data in reader
 		try {
 			fedm.sendProtocol((byte) 0x32);
-		} catch (FedmException e) {
-		} catch (FeReaderDriverException e) {
-		} catch (FePortDriverException e) {
-		}
+		} catch (FedmException | FePortDriverException | FeReaderDriverException e) {
+            e.printStackTrace();
+        }
 
-	}
+    }
 
 	public int getSets() {
 		return sets;
