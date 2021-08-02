@@ -164,9 +164,9 @@ public class BrmReadThread implements Runnable {
                                     + "-" + brmItems[i].getReaderTime().getDay();
 							break;
 						}
-						String hour = String.format("%01d", brmItems[i].getReaderTime().getHour());
-						String minute = String.format("%01d", brmItems[i].getReaderTime().getMinute());
-						String second = String.format("%01d", brmItems[i].getReaderTime().getMilliSecond() / 1000);
+						String hour = String.format("%02d", brmItems[i].getReaderTime().getHour());
+						String minute = String.format("%02d", brmItems[i].getReaderTime().getMinute());
+						String second = String.format("%02d", brmItems[i].getReaderTime().getMilliSecond() / 1000);
                         String millisecond = String.format("%03d", brmItems[i].getReaderTime().getMilliSecond() % 1000);
 
 						time[i] = hour + ":" + minute + ":" + second + "." + millisecond;
