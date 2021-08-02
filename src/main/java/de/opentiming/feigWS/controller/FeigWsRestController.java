@@ -1,27 +1,24 @@
 package de.opentiming.feigWS.controller;
 
+import de.opentiming.feigWS.help.FileOutput;
+import de.opentiming.feigWS.help.StartReaderThread;
+import de.opentiming.feigWS.reader.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.annotation.Resource;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.web.bind.annotation.*;
-
-import de.opentiming.feigWS.reader.ReaderAntenna;
-import de.opentiming.feigWS.help.FileOutput;
-import de.opentiming.feigWS.help.StartReaderThread;
-import de.opentiming.feigWS.reader.BrmReadThread;
-import de.opentiming.feigWS.reader.FedmConnect;
-import de.opentiming.feigWS.reader.ReaderInfo;
-import de.opentiming.feigWS.reader.ReaderMode;
-import de.opentiming.feigWS.reader.ReaderPower;
-import de.opentiming.feigWS.reader.ReaderRelais;
-import de.opentiming.feigWS.reader.ReaderResultFiles;
-import de.opentiming.feigWS.reader.ReaderValidTime;
-import de.opentiming.feigWS.reader.ReaderWriteTag;
 
 @RestController
 @RequestMapping(value="/api")
@@ -155,16 +152,26 @@ public class FeigWsRestController {
     public Set<String> getReaders() {
     	return connections.keySet();
     }
-    
-//    @RequestMapping(path = "/{reader}/download/{value}", method = RequestMethod.GET)
-//    public ResponseEntity<Resource> download(@PathVariable String reader, @PathVariable String value) throws IOException {
-//
-//        InputStreamResource resource = new InputStreamResource(new FileInputStream(param));
-//
-//        return ResponseEntity.ok()
-//                .headers(headers)
-//                .contentLength(file.length())
-//                .contentType(MediaType.parseMediaType("application/octet-stream"))
-//                .body(resource);
-//    }
+
+	/**
+	 * @param value The filename without extension to download. The filename should be fetched via getReaderInfo
+	 * @return A copy of the local log file
+	 * @throws IOException
+	 */
+    @RequestMapping(path = "/download/{value}", method = RequestMethod.GET)
+    public ResponseEntity<String> download(@PathVariable String value) throws IOException {
+    	ReaderResultFiles files = new ReaderResultFiles(env.getProperty("file.output"));
+    	List<String> lines = files.getFileContent(value);
+		if (lines == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+    	String formattedResponse = String.join("\n", lines);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		headers.setContentDispositionFormData(value, value + ".out");
+		headers.setContentLength(formattedResponse.length());
+
+        return new ResponseEntity<String>(formattedResponse, headers, HttpStatus.OK);
+    }
 }

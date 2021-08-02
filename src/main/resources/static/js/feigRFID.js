@@ -235,7 +235,7 @@ function setTableData(r, val, readerIp) {
 	    table = table + "<tr><td>" + val['file'] + "</td>" +
 		"<td class='text-right'>" + val['linecount'] + "</td>" + 
     	"<td><a class='btn btn-success btn-sm' href='#' onclick=\"handleReaderResults('" + readerIp + "','" + val['file'] + "', 'show'); return false;\" role='button'>SHOW</a></td>" + 
-		"<td><a class='btn btn-success btn-sm' href='#' onclick=\"handleReaderResults('" + readerIp + "','" + val['file'] + "', 'load'); return false;\" role='button'>DOWNLOAD</a></td>" + 
+		"<td><a class='btn btn-success btn-sm' href='/api/download/" + val['file'] + "' download='" + val['file'] + "' role='button'>DOWNLOAD</a></td>" +
 		"</tr>";
 	});
 	

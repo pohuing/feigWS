@@ -44,6 +44,7 @@ public class ReaderResultFiles {
     /**
      * Returns the contents of readerFile without the csv header
      * @param readerFile a file name without file extension
+	 * @return The file contents or null if there is no such file in directory
      */
 	public List<String> getFileContent(String readerFile) {
 		
