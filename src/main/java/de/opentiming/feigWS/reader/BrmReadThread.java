@@ -4,6 +4,8 @@ import de.feig.*;
 import de.opentiming.feigWS.help.FileOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 
 import java.io.IOException;
 import java.util.Date;
@@ -30,13 +32,16 @@ public class BrmReadThread implements Runnable {
 	private final FedmIscReader fedm;
 	private int sets = 255;
 	private boolean running;
+	private SerialNumberEncodingType encodingType;
 
-	public BrmReadThread(FedmConnect con, String outputDir) {
+
+	public BrmReadThread(FedmConnect con, String outputDir, SerialNumberEncodingType serialNumberEncodingType) {
 		firstConnect = true;
 		this.con = con;
 		fedm = con.getFedmIscReader();
 		fo = new FileOutput(outputDir);
 		fo.setHost(con.getHost());
+		this.encodingType = serialNumberEncodingType;
 	}
 
 	public synchronized void run() {
@@ -129,7 +134,18 @@ public class BrmReadThread implements Runnable {
 						// serialNumber[i] =
 						// serialNumberHex[i].substring(serialNumberHex[i].length()-4,
 						// serialNumberHex[i].length());
-						serialNumber[i] = Integer.parseInt(serialNumberHex[i].substring(serialNumberHex[i].length() - 4), 16);
+						String sNSubstring = serialNumberHex[i].substring(serialNumberHex[i].length() - 4);
+						if (encodingType == SerialNumberEncodingType.HEXADECIMAL) {
+							serialNumber[i] = Integer.parseInt(sNSubstring, 16);
+						}
+						else{
+							if(sNSubstring.chars().allMatch(value -> value >= '0' && value <='9'))
+								serialNumber[i] = Integer.parseInt(sNSubstring, 10);
+							else{
+								log.warn("Encountered hexadecimal tag but expected decimal, encountered value: {}", sNSubstring);
+							}
+						}
+
 						uniqeNumber[i] = serialNumberHex[i].substring(0, serialNumberHex[i].length() - 4);
 
 					}
@@ -264,27 +280,8 @@ public class BrmReadThread implements Runnable {
 	 *
 	 */
 	private String getDualValue(String antNr) {
-		// TODO: 18.07.2021 Replace with the standard library's Integer.toBinaryString
-		int r; // Rest r
-
 		int dez = Integer.parseInt(antNr, 16);
-		// int dez = Integer.parseInt(antNr);
-		String dual = ""; // die Ausgabe wird in einer Zeichenkette (string) gesammelt
-
-		do {
-			r = dez % 2; // Rest berechnen
-			dez = dez / 2; // neues n berechnen
-			if (r == 0)
-				dual = '0' + dual;
-			else
-				dual = '1' + dual; // Ausgabe konstruieren
-		} while (dez > 0);
-
-		while (dual.length() < 4) {
-			dual = "0" + dual;
-		}
-
-		return dual;
+		return Integer.toBinaryString(dez);
 	}
 
 	private void clearBuffer(FedmIscReader fedm) {

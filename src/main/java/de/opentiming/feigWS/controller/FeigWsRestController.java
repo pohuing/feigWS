@@ -80,8 +80,16 @@ public class FeigWsRestController {
     @RequestMapping(value="/{reader}/mode/{value}", method=RequestMethod.GET)
     public boolean setMode(@PathVariable String reader, @PathVariable String value) {
     	FedmConnect con = connections.get(reader);
-    	
-    	ReaderMode m = new ReaderMode(con);
+		SerialNumberEncodingType encodingType;
+		// Default to hexadecimal tag encoding if no tag.sNFormatting application property is set
+		if (env.getProperty("tag.sNFormatting") == null){
+			System.out.println("tag.sNFormatting is not defined in application.properties. Defaulting to Hexadecimal");
+			encodingType = SerialNumberEncodingType.HEXADECIMAL;
+		}else
+			encodingType = env.getProperty("tag.sNFormatting").equals("Hex") ? SerialNumberEncodingType.HEXADECIMAL : SerialNumberEncodingType.DECIMAL;
+
+
+		ReaderMode m = new ReaderMode(con);
     	m.setMode(value);
     	
         ReaderInfo ri = new ReaderInfo(con);
@@ -89,7 +97,7 @@ public class FeigWsRestController {
     	
     	if(config.get("mode") != null && config.get("mode").equals("BRM")) {
     		if(brmthreads.get(reader) == null) {
-        		StartReaderThread srt = new StartReaderThread(con, env.getProperty("file.output"), env.getProperty("reader.sleep"));
+        		StartReaderThread srt = new StartReaderThread(con, env.getProperty("file.output"), env.getProperty("reader.sleep"), encodingType);
     		    brmthreads.put(reader, srt.getBrmReadThread());
     		}
     	}

@@ -4,6 +4,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import de.opentiming.feigWS.reader.SerialNumberEncodingType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -30,7 +31,15 @@ public class FeigWsApplicationRunner implements ApplicationRunner {
 	@Override
 	public void run(ApplicationArguments arg0) throws Exception {
 		String[] readers = env.getProperty("reader.ip").split(" ");
-		
+		SerialNumberEncodingType encodingType;
+		// Default to hexadecimal tag encoding if no tag.sNFormatting application property is set
+		if (env.getProperty("tag.sNFormatting") == null){
+			System.out.println("tag.sNFormatting is not defined in application.properties. Defaulting to Hexadecimal");
+			encodingType = SerialNumberEncodingType.HEXADECIMAL;
+		}else
+			encodingType = env.getProperty("tag.sNFormatting").equals("Hex") ? SerialNumberEncodingType.HEXADECIMAL : SerialNumberEncodingType.DECIMAL;
+
+
 		for( String reader : readers) {
 			
 			/*
@@ -53,7 +62,7 @@ public class FeigWsApplicationRunner implements ApplicationRunner {
 			/*
 			 * Start Reader thread and store in global bean resource
 			 */			
-			StartReaderThread srt = new StartReaderThread(con, env.getProperty("file.output"), env.getProperty("reader.sleep"));
+			StartReaderThread srt = new StartReaderThread(con, env.getProperty("file.output"), env.getProperty("reader.sleep"), encodingType);
 		    brmthreads.put(reader, srt.getBrmReadThread());
 		}
 	}
