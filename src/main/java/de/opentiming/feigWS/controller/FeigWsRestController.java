@@ -18,7 +18,11 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+
+import static de.opentiming.feigWS.reader.SerialNumberEncodingType.DECIMAL;
+import static de.opentiming.feigWS.reader.SerialNumberEncodingType.HEXADECIMAL;
 
 @RestController
 @RequestMapping(value="/api")
@@ -57,6 +61,7 @@ public class FeigWsRestController {
     			brmthreads.put(reader, null);
     		}
     	}
+    	config.put("encoding", brmthreads.get(reader).encodingType);
     	return config;
     }
 
@@ -84,9 +89,9 @@ public class FeigWsRestController {
 		// Default to hexadecimal tag encoding if no tag.sNFormatting application property is set
 		if (env.getProperty("tag.sNFormatting") == null){
 			System.out.println("tag.sNFormatting is not defined in application.properties. Defaulting to Hexadecimal");
-			encodingType = SerialNumberEncodingType.HEXADECIMAL;
+			encodingType = HEXADECIMAL;
 		}else
-			encodingType = env.getProperty("tag.sNFormatting").equals("Hex") ? SerialNumberEncodingType.HEXADECIMAL : SerialNumberEncodingType.DECIMAL;
+			encodingType = env.getProperty("tag.sNFormatting").equals("Hex") ? HEXADECIMAL : DECIMAL;
 
 
 		ReaderMode m = new ReaderMode(con);
@@ -181,5 +186,11 @@ public class FeigWsRestController {
 		headers.setContentLength(formattedResponse.length());
 
         return new ResponseEntity<String>(formattedResponse, headers, HttpStatus.OK);
+    }
+
+    @RequestMapping("/{reader}/encoding/{value}")
+    public void setTagEncoding(@PathVariable String reader, @PathVariable String value){
+        SerialNumberEncodingType type = Objects.equals(value.toUpperCase(), "DECIMAL") ? DECIMAL : HEXADECIMAL;
+        brmthreads.get(reader).encodingType = type;
     }
 }

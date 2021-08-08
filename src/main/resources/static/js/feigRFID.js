@@ -11,6 +11,7 @@ const Actions = {
 	TOGGLE_RELAIS : 6,
 	ANTENNA_CHECKBOXES :7,
 	INFO: 8,
+    CHANGE_ENCODING: 9
 }
 
 var t;
@@ -142,6 +143,14 @@ function getReaderData(r, a) {
 		case Actions.ANTENNA_CHECKBOXES:
 			let asString = parseCheckboxIntoBitsetString(r);
 			action = 'ant/' + asString;
+			break;
+        case Actions.CHANGE_ENCODING:
+            action = "encoding/";
+            if ($( "input[type=radio][name=encoding]:checked" ).val() === "Hexadecimal")
+                action += "HEXADECIMAL";
+            else
+                action += "DECIMAL";
+            break;
 	}
 	
 	$('#faultstring-' + r).css("display","none");
@@ -175,6 +184,16 @@ function parseCheckboxIntoBitsetString(r) {
 }
 
 /**
+ *
+ * @param r the reader name just like in getReaderData
+ * @param val {string} The textual representation of tag encoding
+ */
+function setEncodingRadio(r, val) {
+    $('#encoding_radio_hexadecimal-'+r).prop( "checked", val === "HEXADECIMAL");
+    $('#encoding_radio_decimal-'+r).prop( "checked", val === "DECIMAL");
+}
+
+/**
  * Updates the config boxes and reader output boxes of reader r
  * Calls de.opentiming.feigWS.reader.ReaderInfo api
  * @param r
@@ -198,7 +217,10 @@ function getReaderInfo(r) {
 				if (key == "antenna"){
 					setAntennaCheckboxes(r, val);
 				}
-				
+				if (key == "encoding"){
+				    setEncodingRadio(r, val);
+                }
+
 				$('#' + key + '-' + r).val(val);
 			});
 		}

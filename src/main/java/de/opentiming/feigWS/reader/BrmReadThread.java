@@ -32,7 +32,7 @@ public class BrmReadThread implements Runnable {
 	private final FedmIscReader fedm;
 	private int sets = 255;
 	private boolean running;
-	private SerialNumberEncodingType encodingType;
+	public SerialNumberEncodingType encodingType;
 
 
 	public BrmReadThread(FedmConnect con, String outputDir, SerialNumberEncodingType serialNumberEncodingType) {

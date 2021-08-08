@@ -75,7 +75,24 @@
             </div>
         </div>
 
-       <div class="form-group row justify-content-md-center" >
+        <div class="form-group row justify-content-md-center">
+            <label for="encoding" class="text-right col-sm-2 ml-auto col-form-label" title="Im Modus Dezimal werden alle Tags mit Hexadezimalen Startnummern verworfen">Tag Encoding</label>
+            <div class="col-sm-3">
+                <label>
+                    Decimal
+                    <input type="radio" title="Im Modus Dezimal werden alle Tags mit Hexadezimalen Startnummern verworfen" th:id="@{encoding_radio_decimal-{reader}(reader=${readerName})}" name="encoding" value="Decimal"/>
+                </label>
+                <label>
+                    Hexadecimal
+                    <input type="radio" th:id="@{encoding_radio_hexadecimal-{reader}(reader=${readerName})}" name="encoding" value="Hexadecimal"/>
+                </label>
+            </div>
+            <div class="col-sm-1 mr-auto">
+                <a class="btn btn-success btn-w90" title="Im Modus Dezimal werden alle Tags mit Hexadezimalen Startnummern verworfen" href="#" th:onclick="'getReaderData(\'' + ${readerName} + '\',Actions.CHANGE_ENCODING); return false;'" role="button">SET</a>
+            </div>
+        </div>
+
+        <div class="form-group row justify-content-md-center" >
           <label th:for="@{relais-{reader}(reader=${readerName})}" class="text-right col-sm-2 ml-auto col-form-label">Relais:</label>
           <div class="col-sm-3">
               <input name="relais" maxlength="200" type="text" class="form-control" th:id="@{relais-{reader}(reader=${readerName})}" placeholder="on" value="on" readonly="true" />
