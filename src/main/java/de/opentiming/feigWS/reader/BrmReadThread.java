@@ -158,7 +158,7 @@ public class BrmReadThread implements Runnable {
      */
     private boolean validate(ReaderTag tag, SerialNumberEncodingType encodingType) {
 	    int LOWEST_START_NUMBER = 0;
-	    int HIGHEST_START_NUMBER = 200;
+	    int HIGHEST_START_NUMBER = 250;
 	    // Decimal Tags may not contain Characters
         if (encodingType == SerialNumberEncodingType.DECIMAL && tag.sNContainsCharacters())
             return false;
