@@ -304,7 +304,7 @@ function showReaderResults(data) {
 				'<th>Antenne</th>' +
 				'<th>RSSI</th>' +
 				'<th>UID</th>' +
-				'<th>Lesezeit</th>' +
+				'<th title="Der Zeitpunkt an dem die Anwendung den Puffer des Readers gelesen hat">Lesezeit</th>' +
 			'</tr>' +
 		'</thead>' +
 		'<tbody>';
