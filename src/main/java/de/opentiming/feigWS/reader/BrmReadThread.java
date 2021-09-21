@@ -118,8 +118,13 @@ public class BrmReadThread implements Runnable {
 
 				for (int i = 0; i < brmItems.length; i++) {
                     String oldNewline = formatTag(readerInfo, brmItems, serialNumberHex, serialNumber, uniqeNumber, data, date, time, type, antNr, rssi, cTime, i);
-                    ReaderTag tag = new ReaderTag(brmItems[i], readerInfo, con.getHost(), getAntData(brmItems[i], "RSSI"), getAntData(brmItems[i], "NR"), cTime);
-
+                    ReaderTag tag;
+                    try {
+                        tag = new ReaderTag(brmItems[i], readerInfo, con.getHost(), getAntData(brmItems[i], "RSSI"), getAntData(brmItems[i], "NR"), cTime);
+                    }catch (Exception e){
+                        // TODO: 14.08.2021 Change to Option because ReaderTag construction may fail 
+                        continue;
+                    }
                     if(!validate(tag, encodingType)){
                         log.warn("Skipping tag because it failed validation {}", tag);
                         continue;
@@ -157,8 +162,10 @@ public class BrmReadThread implements Runnable {
      * @return true if tag passes all checks, false if not
      */
     private boolean validate(ReaderTag tag, SerialNumberEncodingType encodingType) {
+        if(tag == null)
+            return false;
 	    int LOWEST_START_NUMBER = 0;
-	    int HIGHEST_START_NUMBER = 250;
+	    int HIGHEST_START_NUMBER = 150;
 	    // Decimal Tags may not contain Characters
         if (encodingType == SerialNumberEncodingType.DECIMAL && tag.sNContainsCharacters())
             return false;

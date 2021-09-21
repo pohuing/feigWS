@@ -21,7 +21,7 @@ public class ReaderTag {
     public final String cTime;
 
 
-    public ReaderTag(FedmBrmTableItem fedmBrmTableItem, FedmIscReaderInfo readerInfo, String host, String rssi, String antNr, String cTime){
+    public ReaderTag(FedmBrmTableItem fedmBrmTableItem, FedmIscReaderInfo readerInfo, String host, String rssi, String antNr, String cTime) throws Exception {
         if (fedmBrmTableItem.isDataValid(FedmIscReaderConst.DATA_SNR)) {
 
             if (fedmBrmTableItem.isDataValid(FedmIscReaderConst.DATA_SNR)) {
@@ -94,7 +94,7 @@ public class ReaderTag {
             this.cTime = cTime;
             return;
         }
-        throw new Error("FedmBrmTableItem is invalid");
+        throw new Exception("FedmBrmTableItem is invalid");
     }
 
     /**
