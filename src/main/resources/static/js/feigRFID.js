@@ -1,6 +1,3 @@
-/*
- * 
- */
 const Actions = {
 	ANTENNA : 0,
 	TIME : 1,
@@ -11,7 +8,8 @@ const Actions = {
 	TOGGLE_RELAIS : 6,
 	ANTENNA_CHECKBOXES :7,
 	INFO: 8,
-    CHANGE_ENCODING: 9
+    CHANGE_ENCODING: 9,
+    SET_SNR_RANGE: 10
 }
 
 var t;
@@ -151,6 +149,12 @@ function getReaderData(r, a) {
             else
                 action += "DECIMAL";
             break;
+        case Actions.SET_SNR_RANGE:
+            ///{reader}/snrrange/{lower}-{upper}/
+            let lower = $('#lower-' + r).val()
+            let upper = $('#upper-' + r).val()
+            action = "snrrange/" + lower + "-" + upper
+            break;
 	}
 	
 	$('#faultstring-' + r).css("display","none");
@@ -219,6 +223,13 @@ function getReaderInfo(r) {
 				}
 				if (key == "encoding"){
 				    setEncodingRadio(r, val);
+                }
+
+                if(key == "upper"){
+                    $('#upperr-' + r).val(val)
+                }
+                if(key=="lower"){
+                    $('#lower-' + r).val(val)
                 }
 
 				$('#' + key + '-' + r).val(val);

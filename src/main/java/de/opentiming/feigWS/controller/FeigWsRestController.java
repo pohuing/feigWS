@@ -1,8 +1,11 @@
 package de.opentiming.feigWS.controller;
 
 import de.opentiming.feigWS.help.FileOutput;
+import de.opentiming.feigWS.help.RuntimeConfig;
 import de.opentiming.feigWS.help.StartReaderThread;
 import de.opentiming.feigWS.reader.*;
+import de.opentiming.feigWS.reader.filterVariants.EncodingFilter;
+import de.opentiming.feigWS.reader.filterVariants.SnrRangeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
@@ -61,7 +64,12 @@ public class FeigWsRestController {
     			brmthreads.put(reader, null);
     		}
     	}
-    	config.put("encoding", brmthreads.get(reader).encodingType);
+        if (brmthreads.get(reader) != null){
+            config.put("encoding", brmthreads.get(reader).getEncodingType());
+            SnrRangeFilter tagFilter = (SnrRangeFilter) brmthreads.get(reader).getRuntimeConfig().getFilters().stream().filter(f -> f instanceof SnrRangeFilter).findFirst().orElse(new SnrRangeFilter());
+            config.put("lower", tagFilter.getStart());
+            config.put("upper", tagFilter.getEnd());
+        }
     	return config;
     }
 
@@ -85,14 +93,6 @@ public class FeigWsRestController {
     @RequestMapping(value="/{reader}/mode/{value}", method=RequestMethod.GET)
     public boolean setMode(@PathVariable String reader, @PathVariable String value) {
     	FedmConnect con = connections.get(reader);
-		SerialNumberEncodingType encodingType;
-		// Default to hexadecimal tag encoding if no tag.sNFormatting application property is set
-		if (env.getProperty("tag.sNFormatting") == null){
-			System.out.println("tag.sNFormatting is not defined in application.properties. Defaulting to Hexadecimal");
-			encodingType = HEXADECIMAL;
-		}else
-			encodingType = env.getProperty("tag.sNFormatting").equals("Hex") ? HEXADECIMAL : DECIMAL;
-
 
 		ReaderMode m = new ReaderMode(con);
     	m.setMode(value);
@@ -102,7 +102,7 @@ public class FeigWsRestController {
     	
     	if(config.get("mode") != null && config.get("mode").equals("BRM")) {
     		if(brmthreads.get(reader) == null) {
-        		StartReaderThread srt = new StartReaderThread(con, env.getProperty("file.output"), env.getProperty("reader.sleep"), encodingType);
+        		StartReaderThread srt = new StartReaderThread(con, env.getProperty("file.output"), env.getProperty("reader.sleep"), RuntimeConfig.init(env));
     		    brmthreads.put(reader, srt.getBrmReadThread());
     		}
     	}
@@ -185,12 +185,24 @@ public class FeigWsRestController {
 		headers.setContentDispositionFormData(value, value + ".out");
 		headers.setContentLength(formattedResponse.length());
 
-        return new ResponseEntity<String>(formattedResponse, headers, HttpStatus.OK);
+        return new ResponseEntity<>(formattedResponse, headers, HttpStatus.OK);
     }
 
     @RequestMapping("/{reader}/encoding/{value}")
     public void setTagEncoding(@PathVariable String reader, @PathVariable String value){
         SerialNumberEncodingType type = Objects.equals(value.toUpperCase(), "DECIMAL") ? DECIMAL : HEXADECIMAL;
-        brmthreads.get(reader).encodingType = type;
+        RuntimeConfig runtimeConfig = brmthreads.get(reader).getRuntimeConfig();
+        runtimeConfig.setTagEncodingType(type);
+        runtimeConfig.getFilters().removeIf(tagFilter -> tagFilter instanceof EncodingFilter);
+        runtimeConfig.getFilters().add(new EncodingFilter(type));
+        runtimeConfig.serializeToXML();
+    }
+
+    @RequestMapping("/{reader}/snrrange/{lower}-{upper}")
+    public void setTagRange(@PathVariable String reader, @PathVariable int lower, @PathVariable int upper){
+        BrmReadThread brmReadThread = brmthreads.get(reader);
+        brmReadThread.getFilters().removeIf(tagFilter -> tagFilter instanceof SnrRangeFilter);
+        brmReadThread.getFilters().add(new SnrRangeFilter(lower, upper, brmReadThread.getEncodingType()));
+        brmReadThread.getRuntimeConfig().serializeToXML();
     }
 }

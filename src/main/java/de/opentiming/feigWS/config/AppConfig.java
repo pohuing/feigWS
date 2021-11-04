@@ -1,13 +1,12 @@
 package de.opentiming.feigWS.config;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import de.opentiming.feigWS.reader.BrmReadThread;
+import de.opentiming.feigWS.reader.FedmConnect;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import de.opentiming.feigWS.reader.BrmReadThread;
-import de.opentiming.feigWS.reader.FedmConnect;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Configuration

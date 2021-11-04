@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 public class ReaderTag {
     public final String serialNumberHex;
@@ -102,17 +103,16 @@ public class ReaderTag {
      * @param encodingType the base in which to parse
      * @return -1 if the serial number could not be parsed(probably due to wrong encodingType)
      */
-    public int getSerialNumber(SerialNumberEncodingType encodingType) {
-        int result = -1;
+    public Optional<Integer> getSerialNumber(SerialNumberEncodingType encodingType) {
         String sNSubstring = serialNumberHex.substring(serialNumberHex.length() - 4);
         if (encodingType == SerialNumberEncodingType.HEXADECIMAL) {
-            result = Integer.parseInt(sNSubstring, 16);
+            return Optional.of(Integer.parseInt(sNSubstring, 16));
         } else if (sNContainsCharacters()) {
             LoggerFactory.getLogger(this.getClass()).warn("Encountered hexadecimal tag but expected decimal, encountered value: {}", sNSubstring);
+            return Optional.empty();
         } else {
-            result = Integer.parseInt(sNSubstring, 10);
+            return Optional.of(Integer.parseInt(sNSubstring, 10));
         }
-        return result;
     }
 
     /**

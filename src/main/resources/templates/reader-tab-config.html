@@ -76,7 +76,7 @@
         </div>
 
         <div class="form-group row justify-content-md-center">
-            <label for="encoding" class="text-right col-sm-2 ml-auto col-form-label" title="Im Modus Dezimal werden alle Tags mit Hexadezimalen Startnummern verworfen">Tag Encoding</label>
+            <label for="encoding" class="text-right col-sm-2 ml-auto col-form-label" title="Im Modus Dezimal werden alle Tags mit Hexadezimalen Startnummern verworfen">Tag Encoding:</label>
             <div class="col-sm-3">
                 <label>
                     Decimal
@@ -92,7 +92,30 @@
             </div>
         </div>
 
-        <div class="form-group row justify-content-md-center" >
+        <div class="form-group row justify-content-md-center">
+            <label th:for="@{lower-{reader}(reader=${readerName})}" class="text-right col-sm-2 ml-auto col-form-label">Grenzwerte für Tagfilter</label>
+            <div class="col-sm-3">
+                <label  class=" row col-form-label" title="Wert ab welchen Startnummern aufgezeichnet werden">
+                    <div class="col-sm-3">
+                    Mindestwert
+                    </div>
+                    <div class="col">
+                        <input type="number" th:id="@{lower-{reader}(reader=${readerName})}" name="lower"/>
+                    </div>
+                </label>
+                <label  class=" row col-form-label" title="Ausschließliches Limit bis welches Startnummern aufgezeichnet werden">
+                    <div class="col-sm-3">Höchstwert</div>
+                    <div class="col">
+                        <input type="number" th:id="@{upper-{reader}(reader=${readerName})}" name="upper"/>
+                    </div>
+                </label>
+            </div>
+            <div class="col-sm-1 mr-auto">
+                <a class="btn btn-success btn-w90" title="Speichere diese Änderungen" href="#" th:onclick="'getReaderData(\'' + ${readerName} + '\',Actions.SET_SNR_RANGE); return false;'" role="button">SET</a>
+            </div>
+        </div>
+
+        <div class="form-group row justify-content-md-center">
           <label th:for="@{relais-{reader}(reader=${readerName})}" class="text-right col-sm-2 ml-auto col-form-label">Relais:</label>
           <div class="col-sm-3">
               <input name="relais" maxlength="200" type="text" class="form-control" th:id="@{relais-{reader}(reader=${readerName})}" placeholder="on" value="on" readonly="true" />

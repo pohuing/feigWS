@@ -1,20 +1,18 @@
 package de.opentiming.feigWS;
 
-import java.util.Map;
-
-import javax.annotation.Resource;
-
-import de.opentiming.feigWS.reader.SerialNumberEncodingType;
+import de.opentiming.feigWS.help.FileOutput;
+import de.opentiming.feigWS.help.RuntimeConfig;
+import de.opentiming.feigWS.help.StartReaderThread;
+import de.opentiming.feigWS.reader.BrmReadThread;
+import de.opentiming.feigWS.reader.FedmConnect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import de.opentiming.feigWS.reader.FedmConnect;
-import de.opentiming.feigWS.help.FileOutput;
-import de.opentiming.feigWS.help.StartReaderThread;
-import de.opentiming.feigWS.reader.BrmReadThread;
+import javax.annotation.Resource;
+import java.util.Map;
 
 @Component
 public class FeigWsApplicationRunner implements ApplicationRunner {
@@ -31,14 +29,7 @@ public class FeigWsApplicationRunner implements ApplicationRunner {
 	@Override
 	public void run(ApplicationArguments arg0) throws Exception {
 		String[] readers = env.getProperty("reader.ip").split(" ");
-		SerialNumberEncodingType encodingType;
-		// Default to hexadecimal tag encoding if no tag.sNFormatting application property is set
-		if (env.getProperty("tag.sNFormatting") == null){
-			System.out.println("tag.sNFormatting is not defined in application.properties. Defaulting to Hexadecimal");
-			encodingType = SerialNumberEncodingType.HEXADECIMAL;
-		}else
-			encodingType = env.getProperty("tag.sNFormatting").equals("Hex") ? SerialNumberEncodingType.HEXADECIMAL : SerialNumberEncodingType.DECIMAL;
-
+        RuntimeConfig runtimeConfig = RuntimeConfig.init(env);
 
 		for( String reader : readers) {
 			
@@ -62,9 +53,8 @@ public class FeigWsApplicationRunner implements ApplicationRunner {
 			/*
 			 * Start Reader thread and store in global bean resource
 			 */			
-			StartReaderThread srt = new StartReaderThread(con, env.getProperty("file.output"), env.getProperty("reader.sleep"), encodingType);
+			StartReaderThread srt = new StartReaderThread(con, env.getProperty("file.output"), env.getProperty("reader.sleep"), runtimeConfig);
 		    brmthreads.put(reader, srt.getBrmReadThread());
 		}
 	}
-
 }
