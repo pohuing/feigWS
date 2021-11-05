@@ -1,5 +1,6 @@
 package de.opentiming.feigWS.reader.filterVariants;
 
+import de.opentiming.feigWS.help.RuntimeConfig;
 import de.opentiming.feigWS.reader.ReaderTag;
 import de.opentiming.feigWS.reader.SerialNumberEncodingType;
 import de.opentiming.feigWS.reader.TagFilter;
@@ -12,8 +13,8 @@ import java.util.Optional;
 public class SnrRangeFilter implements TagFilter {
     private int start;
     private int end;
-    public SerialNumberEncodingType encodingType;
     private String name;
+    private RuntimeConfig runtimeConfig;
 
     public SnrRangeFilter(){};
 
@@ -22,10 +23,10 @@ public class SnrRangeFilter implements TagFilter {
      * Creates a new Serial number range filter
      * @param start the lower bound of accepted serial numbers
      * @param end the upper exclusive bound of accepted serial numbers
-     * @param encodingType the encoding type used to interpret the tag's serial number
      * @param name the name for this filter instance
+     * @param runtimeConfig The {@link RuntimeConfig} to track for encoding filter changes
      */
-    public SnrRangeFilter(int start, int end, SerialNumberEncodingType encodingType, String name) {
+    public SnrRangeFilter(int start, int end, String name, RuntimeConfig runtimeConfig) {
         if (start > end) {
             int temp = start;
             start = end;
@@ -33,9 +34,8 @@ public class SnrRangeFilter implements TagFilter {
         }
         this.start = start;
         this.end = end;
-        this.encodingType = encodingType;
         this.name = name;
-
+        setRuntimeConfig(runtimeConfig);
     }
 
     /**
@@ -43,10 +43,9 @@ public class SnrRangeFilter implements TagFilter {
      * The name defaults to the class name in this constructor
      * @param start the lower bound of accepted serial numbers
      * @param end the upper exclusive bound of accepted serial numbers
-     * @param encodingType the encoding type used to interpret the tag's serial number
      */
-    public SnrRangeFilter(int start, int end, SerialNumberEncodingType encodingType){
-        this(start, end, encodingType, "SnrRangeFilter");
+    public SnrRangeFilter(int start, int end, RuntimeConfig runtimeConfig){
+        this(start, end, "SnrRangeFilter", runtimeConfig);
     }
 
     @Override
@@ -61,10 +60,10 @@ public class SnrRangeFilter implements TagFilter {
      */
     @Override
     public boolean validate(ReaderTag tag) {
-        Optional<Integer> snrOptional = tag.getSerialNumber(encodingType);
+        Optional<Integer> snrOptional = tag.getSerialNumber(runtimeConfig.getTagEncodingType());
         if (snrOptional.isPresent()) {
             int snr = snrOptional.get();
-            return snr >= getStart() && snr < end;
+            return snr >= getStart() && snr < getEnd();
         }else
             return false;
     }
@@ -87,5 +86,13 @@ public class SnrRangeFilter implements TagFilter {
 
     public void setEnd(int end) {
         this.end = end;
+    }
+
+    public RuntimeConfig getRuntimeConfig() {
+        return runtimeConfig;
+    }
+
+    public void setRuntimeConfig(RuntimeConfig runtimeConfig) {
+        this.runtimeConfig = runtimeConfig;
     }
 }

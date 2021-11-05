@@ -1,22 +1,23 @@
 package de.opentiming.feigWS.reader.filterVariants;
 
+import de.opentiming.feigWS.help.RuntimeConfig;
 import de.opentiming.feigWS.reader.ReaderTag;
 import de.opentiming.feigWS.reader.SerialNumberEncodingType;
 import de.opentiming.feigWS.reader.TagFilter;
 
 public class EncodingFilter implements TagFilter {
     private String name;
-    private SerialNumberEncodingType encodingType;
+    private RuntimeConfig runtimeConfig;
     public EncodingFilter(){}
 
-    public EncodingFilter(SerialNumberEncodingType encodingType, String name){
-        this.setEncodingType(encodingType);
+    public EncodingFilter(RuntimeConfig runtimeConfig, String name){
+        setRuntimeConfig(runtimeConfig);
         this.setName(name);
     }
 
-    public EncodingFilter(SerialNumberEncodingType encodingType){
+    public EncodingFilter(RuntimeConfig runtimeConfig){
         setName("EncodingFilter");
-        this.setEncodingType(encodingType);
+        setRuntimeConfig(runtimeConfig);
     }
 
     @Override
@@ -32,18 +33,18 @@ public class EncodingFilter implements TagFilter {
      */
     @Override
     public boolean validate(ReaderTag tag) {
-        return getEncodingType() != SerialNumberEncodingType.DECIMAL || !tag.sNContainsCharacters();
+        return getRuntimeConfig().getTagEncodingType() != SerialNumberEncodingType.DECIMAL || !tag.sNContainsCharacters();
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public SerialNumberEncodingType getEncodingType() {
-        return encodingType;
+    public RuntimeConfig getRuntimeConfig() {
+        return runtimeConfig;
     }
 
-    public void setEncodingType(SerialNumberEncodingType encodingType) {
-        this.encodingType = encodingType;
+    public void setRuntimeConfig(RuntimeConfig runtimeConfig) {
+        this.runtimeConfig = runtimeConfig;
     }
 }

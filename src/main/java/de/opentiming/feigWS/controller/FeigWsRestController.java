@@ -194,7 +194,7 @@ public class FeigWsRestController {
         RuntimeConfig runtimeConfig = brmthreads.get(reader).getRuntimeConfig();
         runtimeConfig.setTagEncodingType(type);
         runtimeConfig.getFilters().removeIf(tagFilter -> tagFilter instanceof EncodingFilter);
-        runtimeConfig.getFilters().add(new EncodingFilter(type));
+        runtimeConfig.getFilters().add(new EncodingFilter(runtimeConfig));
         runtimeConfig.serializeToXML();
     }
 
@@ -202,7 +202,7 @@ public class FeigWsRestController {
     public void setTagRange(@PathVariable String reader, @PathVariable int lower, @PathVariable int upper){
         BrmReadThread brmReadThread = brmthreads.get(reader);
         brmReadThread.getFilters().removeIf(tagFilter -> tagFilter instanceof SnrRangeFilter);
-        brmReadThread.getFilters().add(new SnrRangeFilter(lower, upper, brmReadThread.getEncodingType()));
+        brmReadThread.getFilters().add(new SnrRangeFilter(lower, upper, brmReadThread.getRuntimeConfig()));
         brmReadThread.getRuntimeConfig().serializeToXML();
     }
 }

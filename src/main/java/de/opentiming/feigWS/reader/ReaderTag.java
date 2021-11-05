@@ -125,7 +125,10 @@ public class ReaderTag {
     }
 
     public String formatForCSV(SerialNumberEncodingType encodingType){
-        return getSerialNumber(encodingType) + ";" + dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + ";"
+        Optional<Integer> optional =getSerialNumber(encodingType);
+        if (!optional.isPresent())
+            return "";
+        return getSerialNumber(encodingType).orElse(-1) + ";" + dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + ";"
                 + dateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss;SSS")) + ";" + host + ";" + antNr
                 + ";" + rssi + ";" + uniqeNumber + ";" + cTime;
     }

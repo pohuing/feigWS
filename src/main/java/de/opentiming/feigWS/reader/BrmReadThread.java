@@ -32,7 +32,7 @@ public class BrmReadThread implements Runnable {
 	private final FedmIscReader fedm;
 	private int sets = 255;
 	private boolean running;
-    private RuntimeConfig runtimeConfig;
+    private final RuntimeConfig runtimeConfig;
 
 
 	public BrmReadThread(FedmConnect con, String outputDir, RuntimeConfig runtimeConfig) {
@@ -118,6 +118,7 @@ public class BrmReadThread implements Runnable {
                         continue;
                     }
                     log.info("{} {} - {} - {} - {}", con.getHost(), tag.serialNumberHex, tag.antNr, tag.rssi, tag.getSerialNumber(runtimeConfig.getTagEncodingType()));
+                    csvFileContent += "\n" + tag.formatForCSV(getEncodingType());
                 }
 
 				try {
