@@ -5,6 +5,8 @@ import de.opentiming.feigWS.reader.ReaderTag;
 import de.opentiming.feigWS.reader.SerialNumberEncodingType;
 import de.opentiming.feigWS.reader.TagFilter;
 
+import java.util.Objects;
+
 public class EncodingFilter implements TagFilter {
     private String name;
     private RuntimeConfig runtimeConfig;
@@ -33,6 +35,8 @@ public class EncodingFilter implements TagFilter {
      */
     @Override
     public boolean validate(ReaderTag tag) {
+        if(tag == null)
+            return false;
         return getRuntimeConfig().getTagEncodingType() != SerialNumberEncodingType.DECIMAL || !tag.sNContainsCharacters();
     }
 
@@ -46,5 +50,24 @@ public class EncodingFilter implements TagFilter {
 
     public void setRuntimeConfig(RuntimeConfig runtimeConfig) {
         this.runtimeConfig = runtimeConfig;
+    }
+
+    /**
+     * Tests if other is of the same Class, and it's members(except for {@link RuntimeConfig} are the same
+     * @param o other Object to check for equality
+     * @return true if o is of the same class, and it's members have the same values
+     * @implNote This does not test the {@link RuntimeConfig}'s equality as this would introduce recursion
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EncodingFilter that = (EncodingFilter) o;
+        return Objects.equals(getName(), that.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName());
     }
 }

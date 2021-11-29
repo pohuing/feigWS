@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public class ReaderTag {
     public final String serialNumberHex;
-    public final String uniqeNumber;
+    public final String uniqueNumber;
     public final String data;
     public final LocalDateTime dateTime;
     public final String type;
@@ -22,6 +22,10 @@ public class ReaderTag {
     public final String cTime;
 
 
+    /**
+     * This constructor checks the validity of the supplied data and only returns a valid object if the input is valid
+     * @throws Exception if the fedmBrmTableItem is invalid
+     */
     public ReaderTag(FedmBrmTableItem fedmBrmTableItem, FedmIscReaderInfo readerInfo, String host, String rssi, String antNr, String cTime) throws Exception {
         if (fedmBrmTableItem.isDataValid(FedmIscReaderConst.DATA_SNR)) {
 
@@ -38,10 +42,10 @@ public class ReaderTag {
                 }
 
                 serialNumberHex = sNH;
-                uniqeNumber = serialNumberHex.substring(0, serialNumberHex.length() - 4);
+                uniqueNumber = serialNumberHex.substring(0, serialNumberHex.length() - 4);
             }else{
                 serialNumberHex = null;
-                uniqeNumber = null;
+                uniqueNumber = null;
             }
 
             if (fedmBrmTableItem.isDataValid(FedmIscReaderConst.DATA_RxDB)) { // data
@@ -98,6 +102,19 @@ public class ReaderTag {
         throw new Exception("FedmBrmTableItem is invalid");
     }
 
+    public ReaderTag(String serialNumberHex, String uniqueNumber, String data, LocalDateTime dateTime, String type, String antNr, String rssi, String host, String cTime) {
+        this.serialNumberHex = serialNumberHex;
+        this.uniqueNumber = uniqueNumber;
+        this.data = data;
+        this.dateTime = dateTime;
+        this.type = type;
+        this.antNr = antNr;
+        this.rssi = rssi;
+        this.host = host;
+        this.cTime = cTime;
+    }
+
+
     /**
      * Returns the parsed serial number
      * @param encodingType the base in which to parse
@@ -124,20 +141,25 @@ public class ReaderTag {
         return !sNSubstring.chars().allMatch(value -> value >= '0' && value <='9');
     }
 
+    /**
+     * Tries to format this for CSV output
+     * @param encodingType Encoding type as which the serial number should be interpreted in
+     * @return semicolon separated CSV of this tag, empty string if encoding type is wrong
+     */
     public String formatForCSV(SerialNumberEncodingType encodingType){
         Optional<Integer> optional =getSerialNumber(encodingType);
         if (!optional.isPresent())
             return "";
         return getSerialNumber(encodingType).orElse(-1) + ";" + dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + ";"
                 + dateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss;SSS")) + ";" + host + ";" + antNr
-                + ";" + rssi + ";" + uniqeNumber + ";" + cTime;
+                + ";" + rssi + ";" + uniqueNumber + ";" + cTime;
     }
 
     @Override
     public String toString() {
         return "ReaderTag{" +
                 "serialNumberHex='" + serialNumberHex + '\'' +
-                ", uniqeNumber='" + uniqeNumber + '\'' +
+                ", uniqueNumber='" + uniqueNumber + '\'' +
                 ", data='" + data + '\'' +
                 ", dateTime=" + dateTime +
                 ", type='" + type + '\'' +

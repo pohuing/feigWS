@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class RuntimeConfig {
@@ -47,6 +48,10 @@ public class RuntimeConfig {
         return serializeToXML(configLocation);
     }
 
+    /**
+     * Serializes this using {@link XMLEncoder} at the specified location, overwriting existing files.
+     * @return true if none of the writing threw an Exception, false if something went wrong
+     */
     public boolean serializeToXML(String path){
         try (FileOutputStream fileOutputStream = new FileOutputStream(path);
              XMLEncoder xmlEncoder = new XMLEncoder(fileOutputStream)) {
@@ -59,6 +64,11 @@ public class RuntimeConfig {
         return false;
     }
 
+    /**
+     * Tries to create a new RuntimeConfig object from a stored RuntimeConfig xml file using an {@link XMLDecoder}
+     * @param path Location of serialized RuntimeConfig
+     * @return Optional.of() if deserialization worked, Optional.empty() if not
+     */
     public static Optional<RuntimeConfig> deserializeFromXML(String path){
         try(FileInputStream fileInputStream = new FileInputStream(path);
             XMLDecoder xmlDecoder = new XMLDecoder(fileInputStream)){
@@ -95,5 +105,22 @@ public class RuntimeConfig {
         newConfig.setTagEncodingType(encodingType);
         newConfig.serializeToXML();
         return newConfig;
+    }
+
+    /**
+     * Checks if all members and Class match this. Also checks if the Filters are the same using the filter's .equals()
+     * @param o other RuntimeConfig to be tested
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RuntimeConfig that = (RuntimeConfig) o;
+        return getTagEncodingType() == that.getTagEncodingType() && Objects.equals(getFilters(), that.getFilters()) && Objects.equals(getConfigLocation(), that.getConfigLocation());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getTagEncodingType(), getFilters(), getConfigLocation());
     }
 }

@@ -2,9 +2,9 @@ package de.opentiming.feigWS.reader.filterVariants;
 
 import de.opentiming.feigWS.help.RuntimeConfig;
 import de.opentiming.feigWS.reader.ReaderTag;
-import de.opentiming.feigWS.reader.SerialNumberEncodingType;
 import de.opentiming.feigWS.reader.TagFilter;
 
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -94,5 +94,24 @@ public class SnrRangeFilter implements TagFilter {
 
     public void setRuntimeConfig(RuntimeConfig runtimeConfig) {
         this.runtimeConfig = runtimeConfig;
+    }
+
+    /**
+     * Tests if other is of the same Class, and it's members(except for {@link RuntimeConfig} are the same
+     * @param o other Object to check for equality
+     * @return true if o is of the same class, and it's members have the same values
+     * @implNote This does not test the {@link RuntimeConfig}'s equality as this would introduce recursion
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SnrRangeFilter filter = (SnrRangeFilter) o;
+        return getStart() == filter.getStart() && getEnd() == filter.getEnd() && Objects.equals(getName(), filter.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getStart(), getEnd(), getName());
     }
 }
