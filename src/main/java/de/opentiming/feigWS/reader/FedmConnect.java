@@ -1,14 +1,12 @@
 package de.opentiming.feigWS.reader;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.feig.FeIscListener;
 import de.feig.Fedm;
-import de.feig.FedmException;
 import de.feig.FedmIscReader;
 import de.feig.FedmIscReaderInfo;
 import de.opentiming.feigWS.help.FeigWsHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FedmConnect implements FeIscListener {
 	
@@ -50,7 +48,7 @@ public class FedmConnect implements FeIscListener {
         	if(!fedm.isConnected() || fedm.getLastError() != 0) {
     		
         		/*
-        		 * Wenn der Reader noch verbunden ist wir derstmal die Verbindung geschlossen
+        		 * Wenn der Reader noch verbunden ist, wird erstmal die Verbindung geschlossen
         		 */
 	        	if(fedm.isConnected()) {
 	        		fedmCloseConnection();

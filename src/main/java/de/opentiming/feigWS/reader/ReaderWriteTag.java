@@ -1,16 +1,11 @@
 package de.opentiming.feigWS.reader;
-import java.util.HashMap;
-import java.util.Map;
 
+import de.feig.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.feig.FePortDriverException;
-import de.feig.FeReaderDriverException;
-import de.feig.FedmException;
-import de.feig.FedmIscReader;
-import de.feig.FedmIscReaderConst;
-import de.feig.FedmIscReaderID;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ReaderWriteTag {
 
@@ -131,7 +126,7 @@ public class ReaderWriteTag {
 		int i = 0;
 		
 		/*
-		 * Es wird sooft geschrieben wie Tags auf der Startnummer sind, da bei jedem Schreibvorgang
+		 * Es wird so oft geschrieben wie Tags auf der Startnummer sind, da bei jedem Schreibvorgang
 		 * nur ein Tag beschrieben wird. Tags mit gleicher ID werden als ein Tag erkannt - daher nicht
 		 * die Anzahl der vorher gelesenen Tags
 		 */

@@ -17,6 +17,9 @@ public class EncodingFilter implements TagFilter {
         this.setName(name);
     }
 
+    /**
+     * Name defaults to EncodingFilter
+     */
     public EncodingFilter(RuntimeConfig runtimeConfig){
         setName("EncodingFilter");
         setRuntimeConfig(runtimeConfig);
@@ -28,10 +31,10 @@ public class EncodingFilter implements TagFilter {
     }
 
     /**
-     * Checks if the tag's serial number could be of the correct type
-     * This cannot be an absolutely perfect check as some hexadecimal numbers are also decimal numbers and vice versa
+     * Checks if the tag's serial number could be of the correct type.
+     * This cannot be an absolutely perfect check as some hexadecimal numbers are also decimal numbers and vice versa.
      * @param tag the ReaderTag to validate
-     * @return true if
+     * @return true if tag is not null and the tag could be encoded according to the {@link RuntimeConfig}'s encoding type
      */
     @Override
     public boolean validate(ReaderTag tag) {
@@ -53,7 +56,7 @@ public class EncodingFilter implements TagFilter {
     }
 
     /**
-     * Tests if other is of the same Class, and it's members(except for {@link RuntimeConfig} are the same
+     * Tests if other is of the same Class, and it's members(except for {@link RuntimeConfig} are the same.
      * @param o other Object to check for equality
      * @return true if o is of the same class, and it's members have the same values
      * @implNote This does not test the {@link RuntimeConfig}'s equality as this would introduce recursion

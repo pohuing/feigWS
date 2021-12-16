@@ -110,7 +110,6 @@ public class BrmReadThread implements Runnable {
                     try {
                         tag = new ReaderTag(brmItem, readerInfo, con.getHost(), getAntData(brmItem, "RSSI"), getAntData(brmItem, "NR"), cTime);
                     } catch (Exception e) {
-                        // TODO: 14.08.2021 Change to Option because ReaderTag construction may fail 
                         continue;
                     }
                     if (!validate(tag, runtimeConfig.getTagEncodingType())) {
@@ -140,7 +139,6 @@ public class BrmReadThread implements Runnable {
     /**
      * Checks if the recorded tag is within filter parameters
      * Currently that means is not of Hexadecimal encoding if Decimal is expected, and that the tag is in the expected range of runners
-     * // TODO: 11.08.2021 Replace with a run time changeable filtering system
      * @return true if tag passes all checks, false if not
      */
     private boolean validate(ReaderTag tag, SerialNumberEncodingType encodingType) {

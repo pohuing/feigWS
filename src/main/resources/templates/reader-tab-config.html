@@ -8,7 +8,7 @@
        <div class="form-group row justify-content-md-center">
            <label th:for="@{power-{reader}(reader=${readerName})}" class="text-right col-sm-2 ml-auto col-form-label">Power:</label>
            <div class="col-sm-3">
-               <input name="power" maxlength="200" type="text" class="form-control" th:id="@{power-{reader}(reader=${readerName})}" placeholder="Power" value="" />
+               <input name="power" maxlength="200" type="text" class="form-control" title="Sendeleistung in Milliwatt" th:id="@{power-{reader}(reader=${readerName})}" placeholder="Power" value="" />
            </div>
            <div class="col-sm-1 mr-auto">
                <a class="btn btn-success btn-w90" href="#" th:onclick="'getReaderData(\'' + ${readerName} + '\',Actions.POWER); return false;'" role="button">SET</a>
@@ -18,7 +18,7 @@
        <div class="form-group row justify-content-md-center">
            <label th:for="@{transponderValidTime-{reader}(reader=${readerName})}" class="text-right col-sm-2 ml-auto col-form-label">Transponder Valid Time:</label>
            <div class="col-sm-3">
-               <input name="transponderValidTime" maxlength="200" type="text" class="form-control" th:id="@{transponderValidTime-{reader}(reader=${readerName})}" placeholder="Transponder Valid Time" value="" />
+               <input name="transponderValidTime" maxlength="200" type="text" class="form-control" title="Zeitraum in Sekunden in welchem ein erneutes Erkennen eines RFID-Tags nicht aufgezeichnet wird." th:id="@{transponderValidTime-{reader}(reader=${readerName})}" placeholder="Transponder Valid Time" value="" />
            </div>
            <div class="col-sm-1 mr-auto">
                <a class="btn btn-success btn-w90" href="#" th:onclick="'getReaderData(\'' + ${readerName} + '\',Actions.VALIDTIME); return false;'" role="button">SET</a>
@@ -38,7 +38,7 @@
        <div class="form-group row justify-content-md-center">
           <label th:for="@{readerTime-{reader}(reader=${readerName})}" class="text-right col-sm-2 ml-auto col-form-label">Time:</label>
           <div class="col-sm-3">
-              <input name="readerTime" maxlength="200" type="text" class="form-control" th:id="@{readerTime-{reader}(reader=${readerName})}" placeholder="Time" value="" />
+              <input name="readerTime" maxlength="200" type="text" class="form-control" title="Die Uhrzeit des Readers als diese Seite aufgerufen wurde" th:id="@{readerTime-{reader}(reader=${readerName})}" placeholder="Time" value="" />
           </div>
           <div class="col-sm-1 mr-auto">
               <!-- <a class="btn btn-success btn-w90" href="#" th:onclick="'getReaderData(\'' + ${readerName} + '\',Actions.TIME); return false;'" role="button">SET</a>  -->
@@ -48,7 +48,7 @@
        <div class="form-group row justify-content-md-center">
           <label th:for="@{antenna-{reader}(reader=${readerName})}" class="text-right col-sm-2 ml-auto col-form-label">Antennen:</label>
           <div class="col-sm-3">
-              <input name="antenna" maxlength="200" type="text" class="form-control" title="Ein Ausschalten der Antennen. 0 für aus 1 für ein, 0011 schaltet Antennen 1 und 2 ein." th:id="@{antenna-{reader}(reader=${readerName})}" placeholder="Antennen" value="" />
+              <input name="antenna" maxlength="200" type="text" class="form-control" title="Ein-Ausschalten der Antennen. 0 für aus 1 für ein, 0011 schaltet Antennen 1 und 2 ein." th:id="@{antenna-{reader}(reader=${readerName})}" placeholder="Antennen" value="" />
           </div>
           <div class="col-sm-1 mr-auto">
               <a class="btn btn-success btn-w90" href="#" th:onclick="'getReaderData(\'' + ${readerName} + '\',Actions.ANTENNA); return false;'" role="button">SET</a>
@@ -132,7 +132,7 @@
             <a class="btn btn-success" href="#" th:onclick="'getReaderData(\'' + ${readerName} + '\',Actions.INFO); return false;'" role="button">UPDATE</a>
           </div>
            <div class="col-sm-1 mr-auto">
-               <a class="btn btn-danger" href="#" th:onclick="'getReaderData(\'' + ${readerName} + '\',Actions.RESET_READER_FILE); return false;'" role="button">CUT READER FILE</a>
+               <a class="btn btn-danger" href="#" title="Speichert die aktuelle Datei unter Namen mit aktuellen Datum als name. Setzt dann die aktuelle Datei zurück" th:onclick="'getReaderData(\'' + ${readerName} + '\',Actions.RESET_READER_FILE); return false;'" role="button">CUT READER FILE</a>
            </div>
        </div>
     </form>
